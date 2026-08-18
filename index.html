@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한끼통살 | 오늘 뭐 먹지?</title>
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="style.css?v=20260818-1" />
+  <link rel="icon" type="image/png" href="img/logo.png" />
+</head>
+
+<body>
+
+  <div class="layout">
+
+    <!-- 좌측 40% : 브랜드 소개 영역 (데스크탑 전용) -->
+    <aside class="brand-panel">
+      <div class="brand-panel__inner">
+        <div class="brand-logo" data-nav="main" role="button" tabindex="0">
+          <img class="brand-logo__mark" src="img/logo.png" alt="한끼통살 로고" />
+          <span class="brand-logo__word">한끼통살</span>
+        </div>
+        <h1 class="brand-title">퍽퍽함은 버리고<br>결만 남긴 진짜 통살</h1>
+        <p class="brand-subcopy">갈아 만들지 않은 진짜 닭가슴살,<br>매일 먹고 싶은 촉촉함을 경험해보세요.</p>
+
+        <div class="brand-search">
+          <input type="text" placeholder="오늘 뭐 먹지?" aria-label="검색" />
+          <button type="button" aria-label="검색하기">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <ul class="brand-tags">
+          <li>#100%통살</li>
+          <li>#저칼로리</li>
+          <li>#시즈닝닭가슴살</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- 우측 60% (데스크탑) / 전체 폭 (모바일) : 서비스 화면 프리뷰 영역 -->
+    <div class="preview-panel">
+
+      <div class="preview-scroll">
+
+        <!-- 이벤트 팝업 (첫 진입 시 자동 노출) -->
+        <div class="event-popup-overlay" id="eventPopupOverlay">
+          <div class="event-popup" role="dialog" aria-modal="true" aria-label="신규가입 혜택 안내">
+            <button type="button" class="event-popup__close" id="eventPopupClose" aria-label="팝업 닫기">✕</button>
+
+            <div class="event-popup__body">
+              <span class="event-popup__sparkle event-popup__sparkle--left" aria-hidden="true">✨</span>
+              <span class="event-popup__sparkle event-popup__sparkle--right" aria-hidden="true">✨</span>
+
+              <div class="event-popup__badges">
+                <span class="event-popup__brand">한끼통살</span>
+                <span class="event-popup__badge">신규가입 혜택</span>
+              </div>
+
+              <p class="event-popup__lead">첫 구매 시</p>
+              <p class="event-popup__amount">5,000<span>원</span></p>
+              <p class="event-popup__sub">할인 쿠폰!</p>
+
+              <div class="event-popup__art">
+                <span class="event-popup__coupon">5,000원<br><small>COUPON</small></span>
+                <img class="event-popup__mascot" src="img/Mascot.png" alt="한끼통살 마스코트" />
+              </div>
+            </div>
+
+            <div class="event-popup__footer">
+              <p class="event-popup__cta-text">🎁 지금 가입하고 <strong>쿠폰</strong> 받으세요!</p>
+              <a href="#" class="event-popup__cta">쿠폰 받으러 가기 <span aria-hidden="true">›</span></a>
+              <label class="event-popup__hide-today">
+                <input type="checkbox" id="eventPopupHideToday" />
+                <span>오늘 하루 보지 않기</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 검색바 오버레이 -->
+        <div class="search-bar-overlay" id="searchBarOverlay">
+          <div class="search-bar-overlay__field">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            </svg>
+            <input type="text" id="searchBarInput" placeholder="오늘 뭐 먹지?" aria-label="검색" />
+          </div>
+          <button type="button" class="search-bar-overlay__close" id="searchBarClose">닫기</button>
+        </div>
+
+        <!-- 상품상세 옵션 선택 바텀시트 -->
+        <div class="option-sheet-overlay" id="optionSheetOverlay">
+          <div class="option-sheet" role="dialog" aria-modal="true" aria-label="옵션 선택">
+            <button type="button" class="option-sheet__handle" id="optionSheetClose" aria-label="닫기">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+
+            <div class="option-sheet__row option-sheet__row--head">
+              <h3>한끼통살 그릴드 닭가슴살 혼합 패키지</h3>
+              <span id="optionUnitPrice">35,900원</span>
+            </div>
+
+            <div class="option-sheet__row">
+              <div class="option-select" id="optionFlavorSelect">
+                <button type="button" class="option-select__trigger" id="optionFlavorTrigger"
+                  aria-haspopup="listbox" aria-expanded="false">
+                  <span id="optionFlavorLabel">양념치킨맛</span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <ul class="option-select__list" id="optionFlavorList" role="listbox" aria-label="맛 선택">
+                  <li role="option" data-value="양념치킨맛" class="is-selected">양념치킨맛</li>
+                  <li role="option" data-value="매콤갈비맛">매콤갈비맛</li>
+                  <li role="option" data-value="핫칠리맛">핫칠리맛</li>
+                  <li role="option" data-value="간장찜닭맛">간장찜닭맛</li>
+                  <li role="option" data-value="사천짜장맛">사천짜장맛</li>
+                  <li role="option" data-value="트러플스노우맛">트러플스노우맛</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="option-sheet__row">
+              <div class="option-sheet__qty">
+                <button type="button" id="optionQtyMinus" aria-label="수량 감소">−</button>
+                <span id="optionQtyValue">1</span>
+                <button type="button" id="optionQtyPlus" aria-label="수량 증가">+</button>
+              </div>
+            </div>
+
+            <div class="option-sheet__total">
+              <span>총 수량 <strong id="optionQtyLabel">1</strong>개</span>
+              <strong id="optionTotalPrice">35,900원</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 메인 화면 -->
+        <div class="screen screen--main is-active" id="mainScreen">
+
+        <!-- 헤더 -->
+        <header class="site-header">
+          <div class="site-header__logo" data-nav="main" role="button" tabindex="0">
+            <img src="img/logo.png" alt="한끼통살 로고" />
+            <span>한끼통살</span>
+          </div>
+          <div class="site-header__search">
+            <input type="text" placeholder="오늘 뭐 먹지?" aria-label="검색" />
+            <button type="button" aria-label="검색하기">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- 서브 내비게이션 -->
+        <nav class="sub-nav" aria-label="카테고리 탭">
+          <a href="#" class="sub-nav__item is-active" data-nav="product-list">한끼픽</a>
+          <a href="#" class="sub-nav__item">60% 할인</a>
+          <a href="#" class="sub-nav__item">베스트</a>
+          <a href="#" class="sub-nav__item">신상품</a>
+          <a href="#" class="sub-nav__item">이벤트</a>
+        </nav>
+
+        <main class="preview-main">
+
+          <!-- 프로모션 배너 캐러셀 -->
+          <section class="promo-carousel" aria-label="프로모션 배너">
+            <div class="promo-carousel__slide">
+              <img src="img/main001.png" alt="한끼통살 시즈닝 닭가슴살 하바네로 레드페퍼 50% 할인, 7.18 OPEN 신상 50% 할인" />
+            </div>
+            <div class="promo-carousel__dots" role="tablist" aria-label="배너 페이지">
+              <span class="is-active"></span><span></span><span></span><span></span><span></span>
+            </div>
+          </section>
+
+          <!-- 카테고리 아이콘 그리드 -->
+          <section class="icon-grid" aria-label="빠른 메뉴">
+            <a href="#" class="icon-grid__item">
+              <span class="icon-grid__icon icon-grid__icon--tan">💰</span>
+              <span class="icon-grid__label">100원</span>
+            </a>
+            <a href="#" class="icon-grid__item" data-nav="product-list">
+              <span class="icon-grid__icon icon-grid__icon--blue">🍴</span>
+              <span class="icon-grid__label">한끼픽</span>
+            </a>
+            <a href="#" class="icon-grid__item">
+              <span class="icon-grid__icon icon-grid__icon--yellow">🍜</span>
+              <span class="icon-grid__label">맛별구매</span>
+            </a>
+            <a href="#" class="icon-grid__item">
+              <span class="icon-grid__icon icon-grid__icon--pink">💲</span>
+              <span class="icon-grid__label">포인트샵</span>
+            </a>
+            <a href="#" class="icon-grid__item">
+              <span class="icon-grid__icon icon-grid__icon--dark">⚡</span>
+              <span class="icon-grid__label">렌지조리</span>
+            </a>
+            <a href="#" class="icon-grid__item">
+              <span class="icon-grid__icon icon-grid__icon--tan">🥄</span>
+              <span class="icon-grid__label">실온보관</span>
+            </a>
+            <a href="#" class="icon-grid__item">
+              <span class="icon-grid__icon icon-grid__icon--outline">🍽️</span>
+              <span class="icon-grid__label">임박특가</span>
+            </a>
+            <a href="#" class="icon-grid__item" data-nav="category">
+              <span class="icon-grid__icon icon-grid__icon--gray">☰</span>
+              <span class="icon-grid__label">카테고리</span>
+            </a>
+          </section>
+
+          <!-- 브랜드 스토리 비교 섹션 -->
+          <section class="story-compare">
+            <div class="story-compare__visual">
+              <span class="story-compare__bubble story-compare__bubble--top">타사 닭가슴살의<br>흔한 퍽퍽함</span>
+              <img class="story-compare__image story-compare__image--dry" src="img/pro_brand01.png"
+                alt="퍽퍽한 타사 닭가슴살 단면" />
+              <img class="story-compare__image story-compare__image--juicy" src="img/pro_brand02.png"
+                alt="촉촉한 한끼통살 닭가슴살 단면" />
+              <span class="story-compare__bubble story-compare__bubble--bottom">한끼통살의<br>살아있는 진짜 통살 결!</span>
+            </div>
+
+            <h3 class="story-compare__headline">보이시나요? 퍽퍽함은 버리고<br>결만 남긴 압도적 촉촉함!</h3>
+            <p class="story-compare__subtext">진짜 통살이라서 가능한 차원이 다른 식감,<br>매일 먹고 싶은 이유입니다.</p>
+
+            <div class="story-compare__product">
+              <img class="story-compare__package" src="img/pro_brand03.png" alt="한끼통살 제품 패키지" />
+              <img class="story-compare__award" src="img/pro_brand04.png" alt="인증/수상 배지" />
+            </div>
+          </section>
+
+          <!-- 인기 맛 랭킹 Top 3 -->
+          <section class="ranking">
+            <div class="section-header">
+              <h3>인기 맛 랭킹 Top 3 <span aria-hidden="true">🏆</span></h3>
+              <a href="#" class="section-header__link">전체보기 ›</a>
+            </div>
+
+            <a href="#" class="ranking__card ranking__card--first">
+              <span class="ranking__rank ranking__rank--1">1</span>
+              <img class="ranking__image" src="img/list001.png" alt="그릴드 바베큐 통살" />
+              <div class="ranking__info">
+                <span class="ranking__tag">베스트셀러</span>
+                <h4>그릴드 바베큐 통살</h4>
+                <p>호불호 없는 완벽한 불맛</p>
+                <span class="ranking__meta">100g / 130kcal</span>
+              </div>
+            </a>
+
+            <div class="ranking__row">
+              <a href="#" class="ranking__card">
+                <span class="ranking__rank ranking__rank--2">2</span>
+                <img class="ranking__image" src="img/list002.png" alt="갈릭 허브 통살" />
+                <h4>갈릭 허브</h4>
+                <span class="ranking__meta">100g / 125kcal</span>
+              </a>
+              <a href="#" class="ranking__card">
+                <span class="ranking__rank ranking__rank--3">3</span>
+                <img class="ranking__image" src="img/list003.png" alt="매콤 칠리 통살" />
+                <h4>매콤 칠리</h4>
+                <span class="ranking__meta">100g / 135kcal</span>
+              </a>
+            </div>
+          </section>
+
+          <!-- 타임특가 -->
+          <section class="time-deal">
+            <div class="section-header">
+              <h3>타임특가 <span aria-hidden="true">⏱️</span></h3>
+              <a href="#" class="section-header__link">전체보기 ›</a>
+            </div>
+            <p class="time-deal__countdown">02:15:30 남음</p>
+
+            <div class="time-deal__row">
+              <a href="#" class="time-deal__card">
+                <img class="time-deal__image" src="img/list004.png" alt="핵불닭맛 통살" />
+                <h4>핵불닭맛</h4>
+                <p><span class="time-deal__discount">50%</span> 10,900원</p>
+              </a>
+              <a href="#" class="time-deal__card">
+                <img class="time-deal__image" src="img/main006.png" alt="핵불닭 10팩 세트" />
+                <h4>핵불닭 10팩 세트</h4>
+                <p><span class="time-deal__discount">50%</span> 10,900원</p>
+              </a>
+            </div>
+          </section>
+
+          <!-- Brand Story 텍스트 섹션 -->
+          <section class="brand-story">
+            <div class="brand-story__text">
+              <span class="brand-story__label">Brand Story</span>
+              <h3>한끼통살 이야기</h3>
+              <p>100% 통살로 만든 진짜 닭가슴살의 혁신.<br>갈아 만들지 않아 결이 살아있는 맛을 경험해보세요!</p>
+              <a href="#" class="brand-story__link" data-nav="brand">자세히 보기 →</a>
+            </div>
+            <img class="brand-story__character" src="img/Mascot.png" alt="한끼통살 마스코트 캐릭터" />
+          </section>
+
+        </main>
+
+        </div>
+        <!-- /메인 화면 -->
+
+        <!-- 상품목록 화면 -->
+        <div class="screen screen--list" id="listScreen">
+
+          <header class="list-header">
+            <button type="button" class="list-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <div class="list-header__logo" data-nav="main" role="button" tabindex="0">
+              <img src="img/logo.png" alt="한끼통살 로고" />
+              <span>한끼통살</span>
+            </div>
+            <div class="list-header__actions">
+              <button type="button" data-action="open-search" aria-label="검색하기">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
+              </button>
+              <button type="button" data-nav="cart" aria-label="장바구니">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="10" cy="21" r="1.4" fill="currentColor" />
+                  <circle cx="17" cy="21" r="1.4" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          <nav class="sub-nav" aria-label="카테고리 탭">
+            <a href="#" class="sub-nav__item is-active">한끼픽</a>
+            <a href="#" class="sub-nav__item">60% 할인</a>
+            <a href="#" class="sub-nav__item">베스트</a>
+            <a href="#" class="sub-nav__item">신상품</a>
+            <a href="#" class="sub-nav__item">이벤트</a>
+          </nav>
+
+          <main class="list-main">
+            <div class="list-toolbar">
+              <span class="list-toolbar__count">총 128개</span>
+              <button type="button" class="list-toolbar__sort">
+                인기순
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="product-grid">
+              <a href="#" class="product-card" data-nav="detail">
+                <div class="product-card__thumb">
+                  <span class="product-card__badge product-card__badge--new">신상</span>
+                  <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                  <img src="img/list001.png" alt="그릴드 바베큐 통살" />
+                </div>
+                <div class="product-card__info">
+                  <h4>그릴드 바베큐 통살</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="product-card" data-nav="detail">
+                <div class="product-card__thumb">
+                  <span class="product-card__badge product-card__badge--new">신상</span>
+                  <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                  <img src="img/list002.png" alt="갈릭 허브 통살" />
+                </div>
+                <div class="product-card__info">
+                  <h4>갈릭 허브 통살</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="product-card" data-nav="detail">
+                <div class="product-card__thumb">
+                  <img src="img/list003.png" alt="갈릭 허브 통살 10팩 세트" />
+                </div>
+                <div class="product-card__info">
+                  <h4>갈릭 허브 통살 10팩 세트</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="product-card" data-nav="detail">
+                <div class="product-card__thumb">
+                  <span class="product-card__badge product-card__badge--deal">타임특가</span>
+                  <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                  <img src="img/list004.png" alt="핵불닭맛 통살" />
+                </div>
+                <div class="product-card__info">
+                  <h4>핵불닭맛 통살</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </main>
+
+        </div>
+        <!-- /상품목록 화면 -->
+
+        <!-- 상품상세 화면 -->
+        <div class="screen screen--detail" id="detailScreen">
+
+          <header class="list-header">
+            <button type="button" class="list-header__back" data-nav="product-list" aria-label="뒤로가기">‹</button>
+            <div class="list-header__logo" data-nav="main" role="button" tabindex="0">
+              <img src="img/logo.png" alt="한끼통살 로고" />
+              <span>한끼통살</span>
+            </div>
+            <div class="list-header__actions">
+              <button type="button" data-action="open-search" aria-label="검색하기">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
+              </button>
+              <button type="button" data-nav="cart" aria-label="장바구니">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="10" cy="21" r="1.4" fill="currentColor" />
+                  <circle cx="17" cy="21" r="1.4" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          <main class="detail-main">
+            <div class="detail-hero">
+              <img src="img/story001.png" alt="한끼통살 그릴드 닭가슴살 혼합 패키지" />
+              <div class="detail-hero__overlay">
+                <div class="detail-hero__badges">
+                  <span class="detail-hero__badge">베스트셀러</span>
+                  <span class="detail-hero__badge">무료배송</span>
+                </div>
+                <h3 class="detail-hero__title">한끼통살 그릴드 닭가슴살 혼합 패키지</h3>
+                <p class="detail-hero__price">
+                  <span class="detail-hero__discount">28%</span>
+                  <strong>35,900원</strong>
+                  <span class="detail-hero__original">49,900원</span>
+                </p>
+              </div>
+            </div>
+
+            <section class="detail-promo">
+              <p class="detail-promo__quote">닭가슴살 먹고 그릇 닦기<br>귀찮으셨던 분 <span aria-hidden="true">🤚</span></p>
+              <h3 class="detail-promo__headline">이제 간편하게<br>스탠딩 파우치로</h3>
+              <img class="detail-promo__image" src="img/story002.png" alt="한끼통살 그릴드 닭가슴살 스탠딩 파우치 5종" />
+            </section>
+
+            <section class="detail-nutrition">
+              <img class="detail-nutrition__image" src="img/story003.png" alt="그릴드 한 눈에 보기 - 맛별 칼로리, 고단백, 저지방, 당류 비교표" />
+            </section>
+
+            <section class="detail-support">
+              <div class="detail-support__row">
+                <span class="detail-support__label">고객센터</span>
+                <span class="detail-support__value">평일 휴게시간 12:30 - 13:30 (주말, 공휴일 휴무)</span>
+              </div>
+              <div class="detail-support__row">
+                <span class="detail-support__label">📞 042.000.0000</span>
+                <span class="detail-support__value">평일 09:00 - 18:00 / 13:00 - 17:00</span>
+              </div>
+            </section>
+          </main>
+
+        </div>
+        <!-- /상품상세 화면 -->
+
+        <!-- 검색 화면 -->
+        <div class="screen screen--search" id="searchScreen">
+
+          <header class="search-header">
+            <button type="button" class="search-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <div class="search-header__field">
+              <input type="text" id="searchScreenInput" placeholder="오늘 뭐 먹지?" aria-label="검색" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" />
+              </svg>
+            </div>
+          </header>
+
+          <main class="search-main">
+            <section class="search-section">
+              <h3>인기 검색어 <span aria-hidden="true">🔥</span></h3>
+              <ol class="search-keywords">
+                <li><span class="search-keywords__rank">1</span>그릴드 바베큐</li>
+                <li><span class="search-keywords__rank">2</span>핵불닭맛</li>
+                <li><span class="search-keywords__rank">3</span>갈릭 허브</li>
+                <li><span class="search-keywords__rank">4</span>매콤 칠리</li>
+                <li><span class="search-keywords__rank">5</span>10팩 세트</li>
+              </ol>
+            </section>
+
+            <section class="search-section">
+              <h3>추천 상품</h3>
+              <div class="product-grid">
+                <a href="#" class="product-card" data-nav="detail">
+                  <div class="product-card__thumb">
+                    <span class="product-card__badge product-card__badge--new">신상</span>
+                    <img src="img/list001.png" alt="그릴드 바베큐 통살" />
+                  </div>
+                  <div class="product-card__info">
+                    <h4>그릴드 바베큐 통살</h4>
+                    <div class="product-card__price-row">
+                      <div>
+                        <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                        <p class="product-card__original">21,900원</p>
+                      </div>
+                      <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="#" class="product-card" data-nav="detail">
+                  <div class="product-card__thumb">
+                    <span class="product-card__badge product-card__badge--deal">타임특가</span>
+                    <img src="img/list004.png" alt="핵불닭맛 통살" />
+                  </div>
+                  <div class="product-card__info">
+                    <h4>핵불닭맛 통살</h4>
+                    <div class="product-card__price-row">
+                      <div>
+                        <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                        <p class="product-card__original">21,900원</p>
+                      </div>
+                      <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </section>
+          </main>
+
+        </div>
+        <!-- /검색 화면 -->
+
+        <!-- 장바구니 화면 -->
+        <div class="screen screen--cart" id="cartScreen">
+
+          <header class="page-header">
+            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <h2 class="page-header__title">장바구니</h2>
+            <span class="page-header__spacer" aria-hidden="true"></span>
+          </header>
+
+          <main class="cart-main">
+            <label class="cart-select-all">
+              <input type="checkbox" id="cartSelectAll" checked />
+              <span>전체선택 (1/2)</span>
+            </label>
+
+            <div class="cart-item">
+              <button type="button" class="cart-item__remove" aria-label="상품 삭제">✕</button>
+              <div class="cart-item__row">
+                <img class="cart-item__image" src="img/list004.png" alt="핵불닭맛 통살" />
+                <div class="cart-item__info">
+                  <h4>핵불닭맛 100g x 10팩</h4>
+                  <span class="cart-item__tag">매운맛</span>
+                </div>
+              </div>
+              <div class="cart-item__bottom">
+                <p class="cart-item__price">25,900원</p>
+                <div class="cart-item__qty">
+                  <button type="button" aria-label="수량 감소">−</button>
+                  <span>1</span>
+                  <button type="button" aria-label="수량 증가">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="cart-item">
+              <button type="button" class="cart-item__remove" aria-label="상품 삭제">✕</button>
+              <div class="cart-item__row">
+                <img class="cart-item__image" src="img/list001.png" alt="그릴드 닭가슴살" />
+                <div class="cart-item__info">
+                  <h4>그릴드 닭가슴살 100g x 5팩</h4>
+                  <span class="cart-item__tag">오리지널</span>
+                </div>
+              </div>
+              <div class="cart-item__bottom">
+                <p class="cart-item__price">13,500원</p>
+                <div class="cart-item__qty">
+                  <button type="button" aria-label="수량 감소">−</button>
+                  <span>2</span>
+                  <button type="button" aria-label="수량 증가">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="cart-summary">
+              <div class="cart-summary__row">
+                <span>총 상품금액</span>
+                <span>39,400원</span>
+              </div>
+              <div class="cart-summary__row">
+                <span>배송비 <em>5만원 이상 무료</em></span>
+                <span>3,000원</span>
+              </div>
+              <div class="cart-summary__row cart-summary__row--total">
+                <span>총 결제예정금액</span>
+                <span>42,400원</span>
+              </div>
+              <button type="button" class="cart-summary__cta" data-nav="checkout">주문하기</button>
+            </div>
+          </main>
+
+        </div>
+        <!-- /장바구니 화면 -->
+
+        <!-- 주문결제 화면 -->
+        <div class="screen screen--checkout" id="checkoutScreen">
+
+          <header class="page-header">
+            <button type="button" class="page-header__back" data-nav="cart" aria-label="뒤로가기">‹</button>
+            <h2 class="page-header__title">주문결제</h2>
+            <span class="page-header__spacer" aria-hidden="true"></span>
+          </header>
+
+          <main class="checkout-main">
+            <section class="checkout-section">
+              <div class="checkout-section__head">
+                <h3>배송지</h3>
+                <button type="button" class="checkout-section__edit">변경</button>
+              </div>
+              <div class="checkout-address">
+                <div class="checkout-address__row">
+                  <strong>채원</strong>
+                  <span class="checkout-address__badge">기본배송지</span>
+                </div>
+                <p>010-1234-5678</p>
+                <p>서울특별시 강남구 테헤란로 123, 4층</p>
+              </div>
+            </section>
+
+            <section class="checkout-section">
+              <div class="checkout-section__head">
+                <h3>주문 상품 <span class="checkout-section__count">2개</span></h3>
+              </div>
+
+              <div class="checkout-item">
+                <img src="img/list004.png" alt="핵불닭맛 통살" />
+                <div class="checkout-item__info">
+                  <h4>핵불닭맛 100g x 10팩</h4>
+                  <span>매운맛 · 1개</span>
+                </div>
+                <p class="checkout-item__price">25,900원</p>
+              </div>
+
+              <div class="checkout-item">
+                <img src="img/list001.png" alt="그릴드 닭가슴살" />
+                <div class="checkout-item__info">
+                  <h4>그릴드 닭가슴살 100g x 5팩</h4>
+                  <span>오리지널 · 2개</span>
+                </div>
+                <p class="checkout-item__price">13,500원</p>
+              </div>
+            </section>
+
+            <section class="checkout-section">
+              <div class="checkout-section__head">
+                <h3>결제수단</h3>
+              </div>
+              <div class="checkout-payment">
+                <label class="checkout-payment__option">
+                  <input type="radio" name="payment" checked />
+                  <span aria-hidden="true">💳</span> 신용/체크카드
+                </label>
+                <label class="checkout-payment__option">
+                  <input type="radio" name="payment" />
+                  <span aria-hidden="true">🟡</span> 카카오페이
+                </label>
+                <label class="checkout-payment__option">
+                  <input type="radio" name="payment" />
+                  <span aria-hidden="true">🟢</span> 네이버페이
+                </label>
+              </div>
+            </section>
+
+            <section class="checkout-summary">
+              <div class="checkout-summary__row">
+                <span>총 상품금액</span>
+                <span>39,400원</span>
+              </div>
+              <div class="checkout-summary__row">
+                <span>배송비</span>
+                <span>3,000원</span>
+              </div>
+              <div class="checkout-summary__row checkout-summary__row--total">
+                <span>총 결제금액</span>
+                <span>42,400원</span>
+              </div>
+            </section>
+          </main>
+
+        </div>
+        <!-- /주문결제 화면 -->
+
+        <!-- 찜한 상품 화면 -->
+        <div class="screen screen--wishlist" id="wishlistScreen">
+
+          <header class="page-header">
+            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <h2 class="page-header__title">찜한 상품</h2>
+            <div class="page-header__icons">
+              <button type="button" data-action="open-search" aria-label="검색하기">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" />
+                </svg>
+              </button>
+              <button type="button" data-nav="cart" aria-label="장바구니">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="10" cy="21" r="1.4" fill="currentColor" />
+                  <circle cx="17" cy="21" r="1.4" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          <main class="list-main">
+            <div class="list-toolbar">
+              <span class="list-toolbar__count">총 4개</span>
+              <button type="button" class="list-toolbar__clear">전체삭제</button>
+            </div>
+
+            <div class="product-grid">
+              <a href="#" class="product-card">
+                <div class="product-card__thumb">
+                  <span class="product-card__badge product-card__badge--new">신상</span>
+                  <button type="button" class="product-card__like product-card__like--active" aria-label="찜 해제">
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                  <img src="img/list001.png" alt="그릴드 바베큐 통살" />
+                </div>
+                <div class="product-card__info">
+                  <h4>그릴드 바베큐 통살</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="product-card">
+                <div class="product-card__thumb">
+                  <span class="product-card__badge product-card__badge--new">신상</span>
+                  <button type="button" class="product-card__like product-card__like--active" aria-label="찜 해제">
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                  <img src="img/list002.png" alt="갈릭 허브 통살" />
+                </div>
+                <div class="product-card__info">
+                  <h4>갈릭 허브 통살</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="product-card">
+                <div class="product-card__thumb">
+                  <button type="button" class="product-card__like product-card__like--active" aria-label="찜 해제">
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                  <img src="img/list003.png" alt="갈릭 허브 통살 10팩 세트" />
+                </div>
+                <div class="product-card__info">
+                  <h4>갈릭 허브 통살 10팩 세트</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+
+              <a href="#" class="product-card">
+                <div class="product-card__thumb">
+                  <span class="product-card__badge product-card__badge--deal">타임특가</span>
+                  <button type="button" class="product-card__like product-card__like--active" aria-label="찜 해제">
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                  <img src="img/list004.png" alt="핵불닭맛 통살" />
+                </div>
+                <div class="product-card__info">
+                  <h4>핵불닭맛 통살</h4>
+                  <div class="product-card__price-row">
+                    <div>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
+                    </div>
+                    <button type="button" class="product-card__add" data-nav="cart" aria-label="장바구니 담기">+</button>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </main>
+
+        </div>
+        <!-- /찜한 상품 화면 -->
+
+        <!-- 마이페이지 화면 -->
+        <div class="screen screen--mypage" id="mypageScreen">
+
+          <header class="mypage-header">
+            <h2>마이페이지</h2>
+            <div class="mypage-header__icons">
+              <button type="button" aria-label="설정">⚙️</button>
+              <button type="button" aria-label="알림">🔔</button>
+              <button type="button" data-nav="cart" aria-label="장바구니">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="10" cy="21" r="1.4" fill="currentColor" />
+                  <circle cx="17" cy="21" r="1.4" fill="currentColor" />
+                </svg>
+              </button>
+            </div>
+          </header>
+
+          <main class="mypage-main">
+            <section class="mypage-greeting">
+              <div>
+                <p class="mypage-greeting__hello">안녕하세요,<br><strong>채원</strong>님!</p>
+                <p class="mypage-greeting__sub">오늘도 맛있는 하루 되세요 🍖</p>
+              </div>
+              <img class="mypage-greeting__avatar" src="img/MascotWelcome.png" alt="한끼통살 마스코트" />
+            </section>
+
+            <section class="mypage-stats" aria-label="내 활동 요약">
+              <div class="mypage-stats__item">
+                <span class="mypage-stats__icon mypage-stats__icon--coin" aria-hidden="true">💰</span>
+                <strong>3,500 P</strong>
+                <span>적립금</span>
+              </div>
+              <div class="mypage-stats__item">
+                <span class="mypage-stats__icon mypage-stats__icon--coupon" aria-hidden="true">🎟️</span>
+                <strong>2장</strong>
+                <span>쿠폰</span>
+              </div>
+              <div class="mypage-stats__item">
+                <span class="mypage-stats__icon mypage-stats__icon--like" aria-hidden="true">♡</span>
+                <strong>12개</strong>
+                <span>찜</span>
+              </div>
+            </section>
+
+            <section class="mypage-order">
+              <div class="mypage-order__header">
+                <h3>진행 중인 주문</h3>
+                <span class="mypage-order__badge">1건</span>
+              </div>
+              <a href="#" class="mypage-order__card">
+                <img src="img/main006.png" alt="촉촉한 닭가슴살 오리지널 10팩" />
+                <div>
+                  <div class="mypage-order__meta">
+                    <span class="mypage-order__status">배송중</span>
+                    <span class="mypage-order__date">26.08.25</span>
+                  </div>
+                  <h4>촉촉한 닭가슴살 오리지널 10팩</h4>
+                  <p>25,900원</p>
+                </div>
+              </a>
+            </section>
+
+            <nav class="mypage-list" aria-label="마이페이지 메뉴">
+              <a href="#" class="mypage-list__item">
+                <span aria-hidden="true">🎧</span>
+                고객센터
+                <svg class="mypage-list__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <a href="#" class="mypage-list__item">
+                <span aria-hidden="true">⚙️</span>
+                설정
+                <svg class="mypage-list__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <a href="#" class="mypage-list__item">
+                <span aria-hidden="true">📢</span>
+                공지사항
+                <svg class="mypage-list__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </nav>
+          </main>
+
+        </div>
+        <!-- /마이페이지 화면 -->
+
+        <!-- 브랜드 스토리 화면 -->
+        <div class="screen screen--brand" id="brandScreen">
+
+          <main class="brand-main">
+            <section class="brand-hero">
+              <img class="brand-hero__image" src="img/brand001.png" alt="한끼통살 그릇 요리 모음" />
+              <button type="button" class="brand-hero__back" data-nav="main" aria-label="뒤로가기">‹</button>
+              <span class="brand-hero__ribbon" aria-hidden="true">100%<br>통살</span>
+              <div class="brand-hero__text">
+                <span class="brand-hero__tag">— NO 재구성육</span>
+                <h2 class="brand-hero__headline">썰지 않고,<br><span>그대로 한 끼</span></h2>
+              </div>
+              <p class="brand-hero__sub">자투리를 뭉치지 않은 <strong>한 덩이 그대로</strong>,<br>결을 잘라보면 바로 보여요.</p>
+            </section>
+
+            <section class="brand-principle">
+              <span class="brand-principle__badge">NO EXCUSE</span>
+              <h3 class="brand-principle__headline">변명없는<br>3가지 원칙</h3>
+            </section>
+
+            <ul class="brand-rules">
+              <li class="brand-rules__item brand-rules__item--accent">
+                <span class="brand-rules__num">01</span>
+                <span class="brand-rules__text"><strong>재구성X</strong>자투리 압착 없이<br>한 덩이 그대로</span>
+              </li>
+              <li class="brand-rules__item brand-rules__item--dark">
+                <span class="brand-rules__num">02</span>
+                <span class="brand-rules__text"><strong>인산염X</strong>첨가물 없이<br>저온 조리로만</span>
+              </li>
+              <li class="brand-rules__item brand-rules__item--accent">
+                <span class="brand-rules__num">03</span>
+                <span class="brand-rules__text"><strong>고온 급속X</strong>63도 아래에서<br>천천히 익혀요</span>
+              </li>
+            </ul>
+
+            <section class="brand-steps">
+              <span class="brand-steps__badge">HOW WE MAKE</span>
+              <h3 class="brand-steps__headline">5단계, 타협 없음</h3>
+
+              <ol class="brand-steps__list">
+                <li class="brand-steps__step">
+                  <span class="brand-steps__circle">1</span>
+                  <div class="brand-steps__card">
+                    <strong>원육 입고</strong>
+                    <p>국내산 신선육 냉장 당일 입고</p>
+                  </div>
+                </li>
+                <li class="brand-steps__step brand-steps__step--reverse">
+                  <div class="brand-steps__card">
+                    <strong>수작업 손질</strong>
+                    <p>지방·힘줄 손으로 직접 제거</p>
+                  </div>
+                  <span class="brand-steps__circle">2</span>
+                </li>
+                <li class="brand-steps__step">
+                  <span class="brand-steps__circle brand-steps__circle--accent">3</span>
+                  <div class="brand-steps__card brand-steps__card--accent">
+                    <strong>저온 조리</strong>
+                    <p>63도 이하 장시간 수비드</p>
+                  </div>
+                </li>
+                <li class="brand-steps__step brand-steps__step--reverse">
+                  <div class="brand-steps__card">
+                    <strong>급속 냉각</strong>
+                    <p>조리 직후 세균 증식 즉시 차단</p>
+                  </div>
+                  <span class="brand-steps__circle">4</span>
+                </li>
+                <li class="brand-steps__step">
+                  <span class="brand-steps__circle">5</span>
+                  <div class="brand-steps__card">
+                    <strong>진공 포장</strong>
+                    <p>1인분씩 소분해 바로 출고</p>
+                  </div>
+                </li>
+              </ol>
+            </section>
+
+            <section class="brand-cta">
+              <img class="brand-cta__logo" src="img/brandlogo.png" alt="한끼통살 마스코트 로고" />
+              <span class="brand-cta__label">HANKKI TONGSAL</span>
+              <h3 class="brand-cta__headline">오늘 한 끼도,<br><span>통살로.</span></h3>
+              <a href="#" class="brand-cta__button" data-nav="cart">지금 바로 구매하기</a>
+            </section>
+          </main>
+
+        </div>
+        <!-- /브랜드 스토리 화면 -->
+
+        <!-- 카테고리 화면 -->
+        <div class="screen screen--category" id="categoryScreen">
+
+          <div class="category-promo">
+            <p><strong>로그인</strong> 하고 다양한 혜택을 받아보세요 <span aria-hidden="true">›</span></p>
+            <button type="button" class="category-promo__close" data-nav="main" aria-label="닫기">✕</button>
+          </div>
+
+          <div class="category-quick">
+            <a href="#" class="category-quick__item">
+              <span aria-hidden="true">📋</span>주문내역
+            </a>
+            <a href="#" class="category-quick__item">
+              <span aria-hidden="true">🎫</span>쿠폰
+            </a>
+            <a href="#" class="category-quick__item" data-nav="wishlist">
+              <span aria-hidden="true">♡</span>찜
+            </a>
+            <a href="#" class="category-quick__item" data-nav="cart">
+              <span aria-hidden="true">🛒</span>장바구니
+            </a>
+          </div>
+
+          <div class="category-tabs">
+            <button type="button" class="category-tabs__item is-active" data-tab="shop">카테고리</button>
+            <button type="button" class="category-tabs__item" data-tab="service">서비스</button>
+          </div>
+
+          <div class="category-body">
+            <nav class="category-sidebar">
+              <button type="button" class="category-sidebar__item is-active" data-cat="tongsal">통살</button>
+              <button type="button" class="category-sidebar__item" data-cat="grill">그릴드</button>
+              <button type="button" class="category-sidebar__item" data-cat="lunchbox">도시락</button>
+              <button type="button" class="category-sidebar__item" data-cat="package">패키지</button>
+            </nav>
+
+            <div class="category-content">
+              <div class="category-content__panel is-active" data-panel="tongsal">
+                <a href="#" class="category-content__link" data-nav="product-list">전체보기 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">오리지널 통살 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">양념 통살 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">매콤 통살 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">허브 통살 <span aria-hidden="true">›</span></a>
+              </div>
+              <div class="category-content__panel" data-panel="grill">
+                <a href="#" class="category-content__link" data-nav="product-list">전체보기 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">그릴드 바베큐 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">그릴드 갈릭허브 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">그릴드 매콤칠리 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">그릴드 5종 세트 <span aria-hidden="true">›</span></a>
+              </div>
+              <div class="category-content__panel" data-panel="lunchbox">
+                <a href="#" class="category-content__link" data-nav="product-list">전체보기 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">통살 도시락 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">그릴드 도시락 <span aria-hidden="true">›</span></a>
+              </div>
+              <div class="category-content__panel" data-panel="package">
+                <a href="#" class="category-content__link" data-nav="product-list">전체보기 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">혼합 패키지 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">10팩 세트 <span aria-hidden="true">›</span></a>
+                <a href="#" class="category-content__link" data-nav="product-list">정기배송 패키지 <span aria-hidden="true">›</span></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="category-body category-body--service" data-tab-panel="service" hidden>
+            <div class="category-content category-content--full">
+              <a href="#" class="category-content__link" data-nav="brand">한끼통살 이야기 <span aria-hidden="true">›</span></a>
+              <a href="#" class="category-content__link">고객센터 <span aria-hidden="true">›</span></a>
+              <a href="#" class="category-content__link">공지사항 <span aria-hidden="true">›</span></a>
+              <a href="#" class="category-content__link">매장 찾기 <span aria-hidden="true">›</span></a>
+            </div>
+          </div>
+
+        </div>
+        <!-- /카테고리 화면 -->
+
+        <!-- 플로팅 웰컴 쿠폰 팝업 -->
+        <div class="welcome-popup" id="welcomePopup" role="dialog" aria-label="웰컴 쿠폰 안내">
+          <img class="welcome-popup__icon" src="img/MascotWelcome.png" alt="한끼통살 웰컴 마스코트" />
+          <p class="welcome-popup__text">환영해요! 꼬꼬!<br>50% 웰컴 쿠폰 받기</p>
+          <button type="button" class="welcome-popup__close" id="welcomePopupClose" aria-label="닫기">✕</button>
+        </div>
+
+        <!-- 하단 고정 탭바 -->
+        <nav class="bottom-tabbar" aria-label="주요 메뉴">
+          <a href="#" class="bottom-tabbar__item" data-nav="category">
+            <span class="bottom-tabbar__icon" aria-hidden="true">☰</span>
+            <span class="bottom-tabbar__label">카테고리</span>
+          </a>
+          <a href="#" class="bottom-tabbar__item" data-nav="search">
+            <span class="bottom-tabbar__icon" aria-hidden="true">🔍</span>
+            <span class="bottom-tabbar__label">검색</span>
+          </a>
+          <a href="#" class="bottom-tabbar__item bottom-tabbar__item--home" data-nav="main">
+            <span class="bottom-tabbar__home-btn" aria-hidden="true">🏠</span>
+          </a>
+          <a href="#" class="bottom-tabbar__item" data-nav="wishlist">
+            <span class="bottom-tabbar__icon" aria-hidden="true">♡</span>
+            <span class="bottom-tabbar__label">찜</span>
+            <span class="bottom-tabbar__badge">PICK</span>
+          </a>
+          <a href="#" class="bottom-tabbar__item" data-nav="mypage">
+            <span class="bottom-tabbar__icon" aria-hidden="true">👤</span>
+            <span class="bottom-tabbar__label">마이페이지</span>
+          </a>
+        </nav>
+
+        <!-- 상품상세 전용 구매바 (상세페이지가 열려있을 때만 표시) -->
+        <div class="detail-buybar">
+          <span class="detail-buybar__badge">할인 -3%</span>
+          <button type="button" class="detail-buybar__subscribe">정기배송</button>
+          <button type="button" class="detail-buybar__cart" data-nav="cart" aria-label="장바구니 담기">
+            <span aria-hidden="true">🎁</span> 장바구니
+          </button>
+          <button type="button" class="detail-buybar__buy" id="detailBuyBtn">구매하기</button>
+        </div>
+
+        <!-- 주문결제 전용 결제바 (주문결제 화면이 열려있을 때만 표시) -->
+        <div class="checkout-buybar">
+          <button type="button" class="checkout-buybar__pay" data-nav="main">42,400원 결제하기</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js" defer></script>
+
+</body>
+
+</html>
