@@ -21,11 +21,39 @@ function positionOverlayToFrame(el) {
 }
 
 window.addEventListener('resize', function () {
-  ['eventPopupOverlay', 'optionSheetOverlay'].forEach(function (id) {
+  ['eventPopupOverlay', 'optionSheetOverlay', 'loginOverlay'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.classList.contains('is-active')) positionOverlayToFrame(el);
   });
 });
+
+// 공용 토스트 — 장바구니 담기, 로그인 성공 등 짧은 안내 메시지에 재사용한다.
+var appToastEl = document.getElementById('appToast');
+var appToastHideTimer = null;
+
+function positionToastToFrame() {
+  if (!appToastEl) return;
+  var frame = document.querySelector('.preview-scroll');
+  if (!frame || window.innerWidth <= 480) {
+    appToastEl.style.left = '';
+    appToastEl.style.bottom = '';
+    return;
+  }
+  var rect = frame.getBoundingClientRect();
+  appToastEl.style.left = (rect.left + rect.width / 2) + 'px';
+  appToastEl.style.bottom = (window.innerHeight - rect.bottom + 90) + 'px';
+}
+
+function showToast(message) {
+  if (!appToastEl) return;
+  appToastEl.textContent = message;
+  positionToastToFrame();
+  appToastEl.classList.add('is-active');
+  if (appToastHideTimer) window.clearTimeout(appToastHideTimer);
+  appToastHideTimer = window.setTimeout(function () {
+    appToastEl.classList.remove('is-active');
+  }, 1800);
+}
 
 (function () {
   var overlay = document.getElementById('eventPopupOverlay');
@@ -296,6 +324,94 @@ window.addEventListener('resize', function () {
 
 })();
 
+// 로그인 상태 관리 — 장바구니의 주문하기 버튼처럼 로그인 후에만 진행 가능한
+// 동작에서 재사용할 수 있도록 전역(파일 스코프)에 둔다. 상태는 새로고침해도
+// 유지되도록 localStorage에 저장한다.
+var loginOverlay = document.getElementById('loginOverlay');
+var loginModalCloseBtn = document.getElementById('loginModalClose');
+var mypageLogoutBtn = document.getElementById('mypageLogoutBtn');
+var utilityAuthBtn = document.getElementById('utilityAuthBtn');
+var headerProfileView = document.getElementById('headerProfileView');
+var LOGIN_STORAGE_KEY = 'hcts_isLoggedIn';
+
+function loadLoginState() {
+  try {
+    return localStorage.getItem(LOGIN_STORAGE_KEY) === '1';
+  } catch (e) {
+    return false; // localStorage 접근 불가(예: file:// 보안 제약) 시 로그아웃 상태로 시작
+  }
+}
+
+function saveLoginState() {
+  try {
+    localStorage.setItem(LOGIN_STORAGE_KEY, isLoggedIn ? '1' : '0');
+  } catch (e) {
+    // 저장 불가 환경에서는 조용히 무시
+  }
+}
+
+var isLoggedIn = loadLoginState();
+
+function renderHeaderAuth() {
+  if (utilityAuthBtn) utilityAuthBtn.textContent = isLoggedIn ? '로그아웃' : '로그인';
+  if (headerProfileView) headerProfileView.hidden = !isLoggedIn;
+}
+
+function openLogin() {
+  if (!loginOverlay) return;
+  positionOverlayToFrame(loginOverlay);
+  loginOverlay.classList.add('is-active');
+}
+
+function closeLogin() {
+  if (loginOverlay) loginOverlay.classList.remove('is-active');
+}
+
+function login() {
+  isLoggedIn = true;
+  saveLoginState();
+  renderHeaderAuth();
+  showToast('로그인 성공');
+}
+
+function logout() {
+  isLoggedIn = false;
+  saveLoginState();
+  renderHeaderAuth();
+  showToast('로그아웃 되었습니다');
+}
+
+renderHeaderAuth();
+
+if (loginOverlay) {
+  if (loginModalCloseBtn) loginModalCloseBtn.addEventListener('click', closeLogin);
+
+  loginOverlay.addEventListener('click', function (e) {
+    if (e.target === loginOverlay) closeLogin();
+  });
+
+  loginOverlay.querySelectorAll('.login-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      closeLogin();
+      login();
+    });
+  });
+}
+
+if (utilityAuthBtn) {
+  utilityAuthBtn.addEventListener('click', function () {
+    if (isLoggedIn) logout();
+    else openLogin();
+  });
+}
+
+if (mypageLogoutBtn) {
+  mypageLogoutBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    logout();
+  });
+}
+
 (function () {
   var tabs = document.querySelectorAll('.category-tabs__item');
   var shopBody = document.querySelector('.category-body:not(.category-body--service)');
@@ -325,4 +441,193 @@ window.addEventListener('resize', function () {
       });
     });
   });
+})();
+
+(function () {
+  var badges = document.querySelectorAll('[data-cart-badge]');
+  var addButtons = document.querySelectorAll('.product-card__add, .detail-buybar__cart');
+  var listEl = document.getElementById('cartItemList');
+  var selectAllLabel = document.getElementById('cartSelectAllLabel');
+  var selectAllRow = document.getElementById('cartSelectAllRow');
+  var emptyStateEl = document.getElementById('cartEmptyState');
+  var summaryEl = document.getElementById('cartSummary');
+  var productTotalEl = document.getElementById('cartSummaryProductTotal');
+  var shippingEl = document.getElementById('cartSummaryShipping');
+  var grandTotalEl = document.getElementById('cartSummaryGrandTotal');
+  var FREE_SHIPPING_THRESHOLD = 50000;
+  var SHIPPING_FEE = 3000;
+
+  if (!badges.length) return;
+
+  var CART_STORAGE_KEY = 'hcts_cartItems';
+
+  // 장바구니 화면에 이미 담겨있는 상품 2개(핵불닭맛, 그릴드 닭가슴살)를 초기값으로 반영
+  var defaultCartItems = [
+    { id: '핵불닭맛 100g x 10팩', name: '핵불닭맛 100g x 10팩', tag: '매운맛', price: 25900, image: 'img/list004.png', qty: 1 },
+    { id: '그릴드 닭가슴살 100g x 5팩', name: '그릴드 닭가슴살 100g x 5팩', tag: '오리지널', price: 13500, image: 'img/list001.png', qty: 2 }
+  ];
+
+  function loadCartItems() {
+    try {
+      var raw = localStorage.getItem(CART_STORAGE_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      return Array.isArray(parsed) ? parsed : null;
+    } catch (e) {
+      return null; // localStorage 접근 불가(예: file:// 보안 제약) 시 초기값 사용
+    }
+  }
+
+  function saveCartItems() {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch (e) {
+      // 저장 불가 환경에서는 조용히 무시 (화면 표시 동작 자체는 계속 진행)
+    }
+  }
+
+  var cartItems = loadCartItems() || defaultCartItems;
+
+  function formatWon(n) {
+    return n.toLocaleString('ko-KR') + '원';
+  }
+
+  function renderBadges() {
+    var totalQty = cartItems.reduce(function (sum, item) { return sum + item.qty; }, 0);
+    badges.forEach(function (badge) {
+      badge.textContent = totalQty > 99 ? '99+' : String(totalQty);
+      badge.hidden = totalQty <= 0;
+    });
+  }
+
+  function renderSummary() {
+    var productTotal = cartItems.reduce(function (sum, item) { return sum + item.price * item.qty; }, 0);
+    var shipping = productTotal > 0 && productTotal < FREE_SHIPPING_THRESHOLD ? SHIPPING_FEE : 0;
+    if (productTotalEl) productTotalEl.textContent = formatWon(productTotal);
+    if (shippingEl) shippingEl.textContent = shipping > 0 ? formatWon(shipping) : '무료';
+    if (grandTotalEl) grandTotalEl.textContent = formatWon(productTotal + shipping);
+    if (selectAllLabel) {
+      selectAllLabel.textContent = '전체선택 (' + cartItems.length + '/' + cartItems.length + ')';
+    }
+  }
+
+  function renderCartItems() {
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    cartItems.forEach(function (item) {
+      var el = document.createElement('div');
+      el.className = 'cart-item';
+      el.innerHTML =
+        '<button type="button" class="cart-item__remove" aria-label="상품 삭제">✕</button>' +
+        '<div class="cart-item__row">' +
+          '<img class="cart-item__image" src="' + item.image + '" alt="' + item.name + '" />' +
+          '<div class="cart-item__info">' +
+            '<h4>' + item.name + '</h4>' +
+            (item.tag ? '<span class="cart-item__tag">' + item.tag + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="cart-item__bottom">' +
+          '<p class="cart-item__price">' + formatWon(item.price) + '</p>' +
+          '<div class="cart-item__qty">' +
+            '<button type="button" class="cart-item__qty-minus" aria-label="수량 감소">−</button>' +
+            '<span>' + item.qty + '</span>' +
+            '<button type="button" class="cart-item__qty-plus" aria-label="수량 증가">+</button>' +
+          '</div>' +
+        '</div>';
+
+      el.querySelector('.cart-item__remove').addEventListener('click', function () {
+        cartItems = cartItems.filter(function (i) { return i !== item; });
+        renderCart();
+      });
+      el.querySelector('.cart-item__qty-minus').addEventListener('click', function () {
+        if (item.qty > 1) {
+          item.qty -= 1;
+          renderCart();
+        }
+      });
+      el.querySelector('.cart-item__qty-plus').addEventListener('click', function () {
+        item.qty += 1;
+        renderCart();
+      });
+
+      listEl.appendChild(el);
+    });
+  }
+
+  function renderEmptyState() {
+    var isEmpty = cartItems.length === 0;
+    if (emptyStateEl) emptyStateEl.hidden = !isEmpty;
+    if (selectAllRow) selectAllRow.hidden = isEmpty;
+    if (summaryEl) summaryEl.hidden = isEmpty;
+  }
+
+  function renderCart() {
+    renderCartItems();
+    renderSummary();
+    renderBadges();
+    renderEmptyState();
+    saveCartItems();
+  }
+
+  function parsePrice(text) {
+    var match = text.match(/([\d,]+)\s*원/);
+    return match ? Number(match[1].replace(/,/g, '')) : 0;
+  }
+
+  function getProductFromCard(card) {
+    var nameEl = card.querySelector('.product-card__info h4');
+    var priceEl = card.querySelector('.product-card__price');
+    var imgEl = card.querySelector('.product-card__thumb img');
+    if (!nameEl || !priceEl || !imgEl) return null;
+    var name = nameEl.textContent.trim();
+    return { id: name, name: name, tag: '', price: parsePrice(priceEl.textContent), image: imgEl.getAttribute('src') };
+  }
+
+  function getProductFromDetail() {
+    var hero = document.querySelector('.detail-hero');
+    if (!hero) return null;
+    var nameEl = hero.querySelector('.detail-hero__title');
+    var priceEl = hero.querySelector('.detail-hero__price strong');
+    var imgEl = hero.querySelector('img');
+    if (!nameEl || !priceEl || !imgEl) return null;
+    var name = nameEl.textContent.trim();
+    return { id: name, name: name, tag: '', price: parsePrice(priceEl.textContent), image: imgEl.getAttribute('src') };
+  }
+
+  function addToCart(product) {
+    var existing = cartItems.filter(function (i) { return i.id === product.id; })[0];
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cartItems.push({ id: product.id, name: product.name, tag: product.tag, price: product.price, image: product.image, qty: 1 });
+    }
+    renderCart();
+    showToast('장바구니에 담겼습니다');
+  }
+
+  addButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var card = btn.closest('.product-card');
+      var product = card ? getProductFromCard(card) : getProductFromDetail();
+      if (product) addToCart(product);
+    });
+  });
+
+  var checkoutBtn = document.getElementById('cartCheckoutBtn');
+  var checkoutScreen = document.getElementById('checkoutScreen');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function () {
+      if (!isLoggedIn) {
+        openLogin();
+        return;
+      }
+      document.querySelectorAll('.screen').forEach(function (s) {
+        s.classList.toggle('is-active', s === checkoutScreen);
+      });
+      var previewScroll = document.querySelector('.preview-scroll');
+      if (previewScroll) previewScroll.scrollTop = 0;
+      window.scrollTo(0, 0);
+    });
+  }
+
+  renderCart();
 })();

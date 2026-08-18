@@ -261,6 +261,48 @@ li {
   object-fit: contain;
 }
 
+.site-header__profile {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.site-header__profile[hidden] {
+  display: none;
+}
+
+.site-header__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--tan);
+  flex-shrink: 0;
+}
+
+/* 유틸리티 바 — 헤더 위, 로그인/장바구니 바로가기 */
+.utility-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 16px 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.utility-bar__item {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.utility-bar__divider {
+  font-size: 10px;
+  color: var(--border);
+}
+
 .site-header__search {
   flex: 1;
   display: flex;
@@ -817,11 +859,143 @@ li {
 }
 
 
+/* 공용 토스트 — 모바일 기본: 화면 하단 중앙 고정 */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 90px;
+  transform: translate(-50%, 8px);
+  background: rgba(30, 15, 10, 0.9);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 200;
+}
+
+.toast.is-active {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+
+/* 로그인 모달 — 메인 화면의 아이콘 그리드/상품 클릭 시 노출 */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 15, 10, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 150;
+}
+
+.login-overlay.is-active {
+  display: flex;
+}
+
+.login-modal {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  background: var(--card);
+  border-radius: 24px;
+  padding: 36px 24px 28px;
+  text-align: center;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+}
+
+.login-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--tan);
+  color: var(--text-sub);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-modal__logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+}
+
+.login-modal__title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--brown);
+  margin-bottom: 6px;
+}
+
+.login-modal__subtitle {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 26px;
+}
+
+.login-modal__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.login-btn__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.login-btn--google {
+  background: #fff;
+  color: #3C4043;
+  border: 1px solid #DADCE0;
+}
+
+.login-btn--apple {
+  background: #000;
+  color: #fff;
+}
+
+.login-btn--kakao {
+  background: #FEE500;
+  color: #191919;
+}
+
+
 /* 이벤트 팝업 — 첫 진입 시 자동 노출되는 신규가입 쿠폰 안내 */
 .event-popup-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(30, 15, 10, 0.55);
+  background: transparent;
   display: none;
   align-items: center;
   justify-content: center;
@@ -934,10 +1108,12 @@ li {
 }
 
 .event-popup__art {
+  position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 10px;
+  gap: 64px;
+  padding-top: 56px;
 }
 
 .event-popup__coupon {
@@ -949,7 +1125,14 @@ li {
   padding: 10px 14px;
   border-radius: 8px;
   border: 2px dashed var(--accent);
+}
+
+.event-popup__coupon--left {
   transform: rotate(-8deg);
+}
+
+.event-popup__coupon--right {
+  transform: rotate(8deg);
 }
 
 .event-popup__coupon small {
@@ -957,9 +1140,25 @@ li {
   font-weight: 700;
 }
 
+.event-popup__mascot-wrap {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.event-popup__mascot-string {
+  width: 2px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
 .event-popup__mascot {
-  width: 96px;
-  height: 96px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
   filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.2));
 }
@@ -1066,6 +1265,28 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 장바구니 아이콘 뱃지 — 헤더마다 반복되는 장바구니 버튼 공통 스타일 */
+.cart-icon-btn {
+  position: relative;
+}
+
+.cart-icon-btn__badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: center;
+  border: 1.5px solid var(--bg);
 }
 
 
@@ -1291,6 +1512,10 @@ li {
   margin-bottom: 14px;
 }
 
+.cart-select-all[hidden] {
+  display: none;
+}
+
 .cart-select-all input {
   width: 16px;
   height: 16px;
@@ -1436,6 +1661,30 @@ li {
   padding: 14px;
   border-radius: 12px;
   margin-top: 16px;
+}
+
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 96px 16px;
+  text-align: center;
+  color: var(--text-sub);
+}
+
+.cart-empty[hidden] {
+  display: none;
+}
+
+.cart-empty__icon {
+  font-size: 36px;
+}
+
+.cart-empty p {
+  font-size: 14px;
+  font-weight: 700;
 }
 
 
