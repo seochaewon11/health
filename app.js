@@ -90,6 +90,57 @@
   runCycle();
 })();
 
+// 메인 화면 프로모션 배너 캐러셀 — scroll-snap 트랙이라 스와이프는 브라우저가 알아서
+// 처리해주고, 여기서는 점(dot) 클릭 시 해당 슬라이드로 이동, 스크롤 위치에 따라
+// 활성 점 동기화, 그리고 몇 초마다 자동으로 다음 슬라이드로 넘어가는 것만 담당한다.
+(function () {
+  var track = document.getElementById('promoCarouselTrack');
+  var dotsWrap = document.getElementById('promoCarouselDots');
+  if (!track || !dotsWrap) return;
+
+  var slides = track.querySelectorAll('.promo-carousel__slide');
+  var dots = dotsWrap.querySelectorAll('span');
+  var AUTO_INTERVAL = 4000;
+  var autoTimer = null;
+
+  function goToSlide(index) {
+    track.scrollTo({ left: track.clientWidth * index, behavior: 'smooth' });
+  }
+
+  dots.forEach(function (dot, i) {
+    dot.addEventListener('click', function () {
+      goToSlide(i);
+    });
+  });
+
+  track.addEventListener('scroll', function () {
+    var index = Math.round(track.scrollLeft / track.clientWidth);
+    dots.forEach(function (dot, i) {
+      dot.classList.toggle('is-active', i === index);
+    });
+  });
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = window.setInterval(function () {
+      var current = Math.round(track.scrollLeft / track.clientWidth);
+      goToSlide((current + 1) % slides.length);
+    }, AUTO_INTERVAL);
+  }
+
+  function stopAuto() {
+    if (autoTimer) window.clearInterval(autoTimer);
+  }
+
+  if (slides.length > 1) {
+    startAuto();
+    // 사용자가 직접 스와이프/클릭하는 동안에는 자동 넘김이 끼어들어 방해하지 않도록 멈췄다가,
+    // 손을 뗀 뒤 잠시 후 다시 시작한다.
+    track.addEventListener('pointerdown', stopAuto);
+    track.addEventListener('pointerup', function () { window.setTimeout(startAuto, AUTO_INTERVAL); });
+  }
+})();
+
 // 커스텀 커서 글로우 — 마우스를 살짝의 지연(lerp)을 두고 따라다니다가, 버튼/링크/
 // 카드/탭 위에서는 커지면서 반응한다. 터치 기기에는 마우스가 없으므로 건너뛴다.
 (function () {
@@ -274,7 +325,14 @@ function showToast(message) {
     'mypage': document.getElementById('mypageScreen'),
     'brand': document.getElementById('brandScreen'),
     'checkout': document.getElementById('checkoutScreen'),
-    'category': document.getElementById('categoryScreen')
+    'category': document.getElementById('categoryScreen'),
+    'customer-center': document.getElementById('customerCenterScreen'),
+    'notice': document.getElementById('noticeScreen'),
+    'store': document.getElementById('storeScreen'),
+    'settings': document.getElementById('settingsScreen'),
+    'notification': document.getElementById('notificationScreen'),
+    'points': document.getElementById('pointsScreen'),
+    'coupon': document.getElementById('couponScreen')
   };
   var screens = Object.keys(screenMap).map(function (key) { return screenMap[key]; });
   var previewScroll = document.querySelector('.preview-scroll');
@@ -665,6 +723,17 @@ if (utilityAuthBtn) {
   utilityAuthBtn.addEventListener('click', function () {
     if (isLoggedIn) logout();
     else openLogin();
+  });
+}
+
+var categoryPromoLogin = document.getElementById('categoryPromoLogin');
+if (categoryPromoLogin) {
+  categoryPromoLogin.addEventListener('click', openLogin);
+  categoryPromoLogin.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openLogin();
+    }
   });
 }
 
