@@ -1,3 +1,35 @@
+// 브랜드 패널 실시간 후기 — 한 줄씩 순서대로 타이핑되어 채워지는 자막 연출.
+// 이전 줄이 다 타이핑된 뒤 잠깐 멈췄다가 다음 줄이 이어서 시작된다.
+(function () {
+  var lines = document.querySelectorAll('.brand-reviews__line');
+  if (!lines.length) return;
+
+  var TYPE_SPEED = 32;
+  var LINE_PAUSE = 550;
+  var START_DELAY = 600;
+
+  function typeLine(index) {
+    if (index >= lines.length) return;
+    var el = lines[index];
+    var text = el.getAttribute('data-text') || '';
+    var i = 0;
+    el.classList.add('is-typing');
+    (function step() {
+      el.textContent = text.slice(0, i);
+      i++;
+      if (i <= text.length) {
+        window.setTimeout(step, TYPE_SPEED);
+      } else {
+        el.classList.remove('is-typing');
+        el.classList.add('is-done');
+        window.setTimeout(function () { typeLine(index + 1); }, LINE_PAUSE);
+      }
+    })();
+  }
+
+  window.setTimeout(function () { typeLine(0); }, START_DELAY);
+})();
+
 // 커스텀 커서 글로우 — 마우스를 살짝의 지연(lerp)을 두고 따라다니다가, 버튼/링크/
 // 카드/탭 위에서는 커지면서 반응한다. 터치 기기에는 마우스가 없으므로 건너뛴다.
 (function () {

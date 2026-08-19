@@ -248,6 +248,63 @@ li {
   color: #fff;
 }
 
+/* 브랜드 패널 실시간 후기 — 타이핑되듯 한 줄씩 점진적으로 채워지는 소셜 프루프 연출 */
+.brand-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.brand-reviews__line {
+  position: relative;
+  padding-left: 22px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #F3E7DF;
+  min-height: 1.5em;
+}
+
+.brand-reviews__line::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.brand-reviews__line.is-typing::before,
+.brand-reviews__line.is-done::before {
+  opacity: 1;
+}
+
+.brand-reviews__line.is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: brand-reviews-blink 0.8s steps(1, end) infinite;
+}
+
+@keyframes brand-reviews-blink {
+
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 
 /* ------------------------------------------------------------
    서비스 화면 프리뷰 영역 — 기본(모바일): 실제 페이지, 폭 100%
