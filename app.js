@@ -334,6 +334,19 @@ function showToast(message) {
   });
 })();
 
+// 서브 내비게이션(한끼픽 / 60% 할인 / 베스트 등) — 클릭한 탭으로 활성 표시(밑줄)가
+// 옮겨가도록 같은 <nav> 안의 형제 탭들끼리 is-active를 토글한다. 화면 이동은
+// data-nav의 몫이고, 여기서는 순수하게 시각적 선택 상태만 관리한다.
+document.querySelectorAll('.sub-nav').forEach(function (nav) {
+  nav.querySelectorAll('.sub-nav__item').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      nav.querySelectorAll('.sub-nav__item').forEach(function (t) {
+        t.classList.toggle('is-active', t === tab);
+      });
+    });
+  });
+});
+
 (function () {
   var overlay = document.getElementById('searchBarOverlay');
   var input = document.getElementById('searchBarInput');
