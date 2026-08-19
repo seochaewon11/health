@@ -248,60 +248,192 @@ li {
   color: #fff;
 }
 
-/* 브랜드 패널 실시간 후기 — 타이핑되듯 한 줄씩 점진적으로 채워지는 소셜 프루프 연출 */
-.brand-reviews {
+/* 브랜드 패널 인트로 릴 — 짧은 카피 말풍선이 위→아래로 쌓이며 나타났다가,
+   상품 컷으로 전환되는 걸 무한 반복하는 GIF 느낌의 자체 재생 루프.
+   전부 CSS 애니메이션의 % 타임라인으로 맞춰져 있어 매 루프 자동으로 처음부터 다시 시작된다. */
+.brand-reel {
+  position: relative;
+  margin-top: 28px;
+  height: 168px;
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.brand-reel__bubbles {
+  position: absolute;
+  inset: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 28px;
+  gap: 8px;
 }
 
-.brand-reviews__line {
-  position: relative;
-  padding-left: 22px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #F3E7DF;
-  min-height: 1.5em;
-}
-
-.brand-reviews__line::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: var(--accent);
-  font-weight: 800;
+.brand-reel__bubble {
+  align-self: flex-start;
+  max-width: 90%;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brown);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transform: translateY(8px);
+  animation-duration: 10s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
 }
 
-.brand-reviews__line.is-typing::before,
-.brand-reviews__line.is-done::before {
-  opacity: 1;
+.brand-reel__bubble--1 {
+  background: var(--tan);
+  animation-name: brand-reel-b1;
 }
 
-.brand-reviews__line.is-typing::after {
-  content: '';
-  display: inline-block;
-  width: 2px;
-  height: 1em;
-  margin-left: 2px;
-  background: var(--accent);
-  vertical-align: text-bottom;
-  animation: brand-reviews-blink 0.8s steps(1, end) infinite;
+.brand-reel__bubble--2 {
+  background: var(--yellow);
+  animation-name: brand-reel-b2;
 }
 
-@keyframes brand-reviews-blink {
+.brand-reel__bubble--3 {
+  background: var(--pink);
+  animation-name: brand-reel-b3;
+}
+
+.brand-reel__bubble--4 {
+  background: var(--blue);
+  animation-name: brand-reel-b4;
+}
+
+.brand-reel__product {
+  position: absolute;
+  inset: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: brand-reel-product 10s ease-out infinite;
+}
+
+.brand-reel__product img {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.brand-reel__product p {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #fff;
+}
+
+@keyframes brand-reel-b1 {
 
   0%,
-  49% {
-    opacity: 1;
+  3% {
+    opacity: 0;
+    transform: translateY(8px);
   }
 
-  50%,
+  7%,
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  55%,
   100% {
     opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes brand-reel-b2 {
+
+  0%,
+  11% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  15%,
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  55%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes brand-reel-b3 {
+
+  0%,
+  19% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  23%,
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  55%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes brand-reel-b4 {
+
+  0%,
+  27% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  31%,
+  50% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  55%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes brand-reel-product {
+
+  0%,
+  55% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  60%,
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  90%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
   }
 }
 
