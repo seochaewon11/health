@@ -324,6 +324,18 @@ function showToast(message) {
 
 })();
 
+// Firebase 초기화 — Google 로그인에 사용
+var firebaseConfig = {
+  apiKey: "AIzaSyDM0_phA5C4d9xq_cwvifbjFwGi78h770c",
+  authDomain: "health-26912.firebaseapp.com",
+  projectId: "health-26912",
+  storageBucket: "health-26912.firebasestorage.app",
+  messagingSenderId: "573463078289",
+  appId: "1:573463078289:web:155e9e8b515fc262f4e630"
+};
+firebase.initializeApp(firebaseConfig);
+var googleProvider = new firebase.auth.GoogleAuthProvider();
+
 // 로그인 상태 관리 — 장바구니의 주문하기 버튼처럼 로그인 후에만 진행 가능한
 // 동작에서 재사용할 수 있도록 전역(파일 스코프)에 둔다. 상태는 새로고침해도
 // 유지되도록 localStorage에 저장한다.
@@ -374,6 +386,18 @@ function login() {
   showToast('로그인 성공');
 }
 
+function loginWithGoogle() {
+  firebase.auth().signInWithPopup(googleProvider)
+    .then(function () {
+      closeLogin();
+      login();
+    })
+    .catch(function (error) {
+      console.error('Google 로그인 실패:', error);
+      showToast('구글 로그인에 실패했습니다');
+    });
+}
+
 function logout() {
   isLoggedIn = false;
   saveLoginState();
@@ -392,6 +416,10 @@ if (loginOverlay) {
 
   loginOverlay.querySelectorAll('.login-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
+      if (btn.classList.contains('login-btn--google')) {
+        loginWithGoogle();
+        return;
+      }
       closeLogin();
       login();
     });
