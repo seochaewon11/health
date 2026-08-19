@@ -659,12 +659,15 @@ li {
   flex: 0 0 100%;
   scroll-snap-align: start;
   overflow: hidden;
+  /* 슬라이드별 원본 이미지 비율(첫 배너 4:3 vs 상품컷 1:1)이 달라서 height:auto로 두면
+     스와이프할 때마다 배너 높이가 들쭉날쭉해지므로, 박스 비율을 고정하고 이미지를 채워 자른다. */
+  aspect-ratio: 4 / 3;
 }
 
 .promo-carousel__slide img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -3716,6 +3719,70 @@ li {
 
 .info-list__amount--plus {
   color: var(--accent-dark);
+}
+
+.order-list {
+  width: 100%;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.order-list__item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.order-list__item:last-child {
+  border-bottom: none;
+}
+
+.order-list__item img {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--tan);
+  flex-shrink: 0;
+}
+
+.order-list__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.order-list__status {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-sub);
+  background: var(--tan);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.order-list__status--ing {
+  color: var(--accent-dark);
+  background: #FCE7DB;
+}
+
+.order-list__date {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.order-list__item h4 {
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.order-list__item p {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--brown);
 }
 
 

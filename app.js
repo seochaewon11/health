@@ -332,27 +332,37 @@ function showToast(message) {
     'settings': document.getElementById('settingsScreen'),
     'notification': document.getElementById('notificationScreen'),
     'points': document.getElementById('pointsScreen'),
-    'coupon': document.getElementById('couponScreen')
+    'coupon': document.getElementById('couponScreen'),
+    'order': document.getElementById('orderScreen')
   };
   var screens = Object.keys(screenMap).map(function (key) { return screenMap[key]; });
+  // 뒤로가기 버튼이 화면마다 고정된 목적지가 아니라 실제로 "직전에 있던 화면"으로
+  // 돌아가야 해서(예: 마이페이지 목록에서 들어간 고객센터는 마이페이지로, 카테고리
+  // 퀵메뉴에서 들어간 쿠폰함은 카테고리로) 방문 순서를 스택으로 기록해둔다.
+  var navHistory = ['main'];
   var previewScroll = document.querySelector('.preview-scroll');
   var searchBarOverlay = document.getElementById('searchBarOverlay');
   var searchScreenInput = document.getElementById('searchScreenInput');
   var tabbarItems = document.querySelectorAll('.bottom-tabbar__item');
 
+  function keyForScreen(target) {
+    var found = null;
+    Object.keys(screenMap).forEach(function (key) {
+      if (screenMap[key] === target) found = key;
+    });
+    return found;
+  }
+
   // 하단 탭바는 5개 항목(카테고리/검색/홈/찜/마이페이지)만 있고 상세·장바구니 등
   // 나머지 화면은 대응되는 탭이 없으므로, 그런 화면에서는 탭바가 전부 비활성 상태가 된다.
   function setActiveTab(target) {
-    var activeKey = null;
-    Object.keys(screenMap).forEach(function (key) {
-      if (screenMap[key] === target) activeKey = key;
-    });
+    var activeKey = keyForScreen(target);
     tabbarItems.forEach(function (item) {
       item.classList.toggle('is-active', item.getAttribute('data-nav') === activeKey);
     });
   }
 
-  function showScreen(target) {
+  function showScreen(target, isBack) {
     if (!target) return;
     screens.forEach(function (screen) {
       if (screen) screen.classList.toggle('is-active', screen === target);
@@ -367,6 +377,20 @@ function showToast(message) {
     if (target === screenMap.search && searchScreenInput) {
       window.setTimeout(function () { searchScreenInput.focus(); }, 200);
     }
+
+    var key = keyForScreen(target);
+    if (isBack) {
+      // 뒤로가기로 도착한 화면이면 스택 맨 위를 이 화면으로 맞춰두기만 하고 새로 쌓지 않는다.
+      if (key) navHistory[navHistory.length - 1] = key;
+    } else if (key && navHistory[navHistory.length - 1] !== key) {
+      navHistory.push(key);
+    }
+  }
+
+  // 뒤로가기 버튼 전용: 스택에서 현재 화면을 걷어내고 그 직전 화면을 보여준다.
+  function goBack() {
+    if (navHistory.length > 1) navHistory.pop();
+    showScreen(screenMap[navHistory[navHistory.length - 1]], true);
   }
 
   setActiveTab(screenMap.main);
@@ -377,7 +401,12 @@ function showToast(message) {
       // 카드 안에 찜 버튼처럼 중첩된 data-nav 요소가 있을 수 있어, 클릭이 상위
       // 카드(예: 상세페이지 이동)로 버블링되어 의도치 않게 다른 화면으로 전환되는 것을 막는다.
       e.stopPropagation();
-      showScreen(screenMap[el.getAttribute('data-nav')]);
+      var key = el.getAttribute('data-nav');
+      if (key === 'back') {
+        goBack();
+      } else {
+        showScreen(screenMap[key]);
+      }
     });
 
     // 로고처럼 div에 role="button"을 붙인 요소는 네이티브 키보드 조작이 없으므로 보완한다.
@@ -1020,12 +1049,15 @@ if (mypageLogoutBtn) {
   var toolbarEl = document.getElementById('wishlistToolbar');
   var emptyEl = document.getElementById('wishlistEmptyState');
   var clearBtn = document.getElementById('wishlistClearBtn');
+  var mypageCountEl = document.getElementById('mypageWishlistCount');
 
   if (!grid) return;
 
   function updateWishlistUI() {
     var count = grid.querySelectorAll('.product-card').length;
     if (countEl) countEl.textContent = '총 ' + count + '개';
+    // 마이페이지 요약의 "찜" 개수도 실제 찜 목록과 항상 같은 값을 보여줘야 하므로 함께 갱신한다.
+    if (mypageCountEl) mypageCountEl.textContent = count + '개';
     var isEmpty = count === 0;
     if (emptyEl) emptyEl.hidden = !isEmpty;
     if (toolbarEl) toolbarEl.hidden = isEmpty;

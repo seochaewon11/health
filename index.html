@@ -265,20 +265,12 @@
               <div class="promo-carousel__slide">
                 <img src="img/main001.png" alt="한끼통살 시즈닝 닭가슴살 하바네로 레드페퍼 50% 할인, 7.18 OPEN 신상 50% 할인" />
               </div>
-              <a href="#" class="promo-carousel__slide" data-nav="detail">
-                <img src="img/list001.png" alt="그릴드 바베큐 통살" />
-                <div class="promo-carousel__caption">
-                  <span class="promo-carousel__badge">50% 할인</span>
-                  <strong>그릴드 바베큐 통살</strong>
-                </div>
-              </a>
-              <a href="#" class="promo-carousel__slide" data-nav="detail">
-                <img src="img/list004.png" alt="핵불닭맛 통살" />
-                <div class="promo-carousel__caption">
-                  <span class="promo-carousel__badge">타임특가</span>
-                  <strong>핵불닭맛 통살</strong>
-                </div>
-              </a>
+              <div class="promo-carousel__slide">
+                <img src="img/pro_main3.png" alt="한끼통살 4가지 맛으로 매일 맛있게, 7.18 OPEN 신상 50% 할인" />
+              </div>
+              <div class="promo-carousel__slide">
+                <img src="img/pro_main2.png" alt="한끼통살 갈릭허브 레드페퍼 50% 할인, 7.18 OPEN 신상 50% 할인" />
+              </div>
             </div>
             <div class="promo-carousel__dots" id="promoCarouselDots" role="tablist" aria-label="배너 페이지">
               <span class="is-active"></span><span></span><span></span>
@@ -1039,7 +1031,7 @@
               </a>
               <a href="#" class="mypage-stats__item" data-nav="wishlist">
                 <span class="mypage-stats__icon mypage-stats__icon--like" aria-hidden="true">♡</span>
-                <strong>12개</strong>
+                <strong id="mypageWishlistCount">4개</strong>
                 <span>찜</span>
               </a>
             </section>
@@ -1049,7 +1041,7 @@
                 <h3>진행 중인 주문</h3>
                 <span class="mypage-order__badge">1건</span>
               </div>
-              <a href="#" class="mypage-order__card">
+              <a href="#" class="mypage-order__card" data-nav="order">
                 <img src="img/main006.png" alt="촉촉한 닭가슴살 오리지널 10팩" />
                 <div>
                   <div class="mypage-order__meta">
@@ -1199,7 +1191,7 @@
           </div>
 
           <div class="category-quick">
-            <a href="#" class="category-quick__item">
+            <a href="#" class="category-quick__item" data-nav="order">
               <span aria-hidden="true">📋</span>주문내역
             </a>
             <a href="#" class="category-quick__item" data-nav="coupon">
@@ -1256,7 +1248,7 @@
         <!-- 고객센터 화면 -->
         <div class="screen screen--info" id="customerCenterScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">고객센터</h2>
           </header>
           <main class="info-page">
@@ -1283,7 +1275,7 @@
         <!-- 공지사항 화면 -->
         <div class="screen screen--info" id="noticeScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">공지사항</h2>
           </header>
           <main class="info-page">
@@ -1311,7 +1303,7 @@
         <!-- 매장 찾기 화면 -->
         <div class="screen screen--info" id="storeScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">매장 찾기</h2>
           </header>
           <main class="info-page">
@@ -1325,7 +1317,7 @@
         <!-- 설정 화면 -->
         <div class="screen screen--info" id="settingsScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">설정</h2>
           </header>
           <main class="info-page">
@@ -1350,7 +1342,7 @@
         <!-- 알림 화면 -->
         <div class="screen screen--info" id="notificationScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">알림</h2>
           </header>
           <main class="info-page">
@@ -1373,7 +1365,7 @@
         <!-- 적립금 내역 화면 -->
         <div class="screen screen--info" id="pointsScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">적립금 내역</h2>
           </header>
           <main class="info-page">
@@ -1405,7 +1397,7 @@
         <!-- 쿠폰함 화면 -->
         <div class="screen screen--info" id="couponScreen">
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">쿠폰함</h2>
           </header>
           <main class="info-page">
@@ -1426,6 +1418,52 @@
           </main>
         </div>
         <!-- /쿠폰함 화면 -->
+
+        <!-- 주문내역 화면 -->
+        <div class="screen screen--info" id="orderScreen">
+          <header class="page-header">
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
+            <h2 class="page-header__title">주문내역</h2>
+          </header>
+          <main class="info-page">
+            <ul class="order-list">
+              <li class="order-list__item">
+                <img src="img/main006.png" alt="촉촉한 닭가슴살 오리지널 10팩" />
+                <div>
+                  <div class="order-list__meta">
+                    <span class="order-list__status order-list__status--ing">배송중</span>
+                    <span class="order-list__date">2026.08.25</span>
+                  </div>
+                  <h4>촉촉한 닭가슴살 오리지널 10팩</h4>
+                  <p>25,900원</p>
+                </div>
+              </li>
+              <li class="order-list__item">
+                <img src="img/main003.png" alt="양념 통살 5팩" />
+                <div>
+                  <div class="order-list__meta">
+                    <span class="order-list__status">배송완료</span>
+                    <span class="order-list__date">2026.08.02</span>
+                  </div>
+                  <h4>양념 통살 5팩</h4>
+                  <p>18,900원</p>
+                </div>
+              </li>
+              <li class="order-list__item">
+                <img src="img/main001.png" alt="오리지널 통살 10팩" />
+                <div>
+                  <div class="order-list__meta">
+                    <span class="order-list__status">배송완료</span>
+                    <span class="order-list__date">2026.07.15</span>
+                  </div>
+                  <h4>오리지널 통살 10팩</h4>
+                  <p>25,900원</p>
+                </div>
+              </li>
+            </ul>
+          </main>
+        </div>
+        <!-- /주문내역 화면 -->
 
         <!-- 플로팅 웰컴 쿠폰 팝업 -->
         <div class="welcome-popup" id="welcomePopup" role="dialog" aria-label="웰컴 쿠폰 안내">
