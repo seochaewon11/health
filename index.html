@@ -874,12 +874,17 @@
           </header>
 
           <main class="list-main">
-            <div class="list-toolbar">
-              <span class="list-toolbar__count">총 4개</span>
-              <button type="button" class="list-toolbar__clear">전체삭제</button>
+            <div class="cart-empty" id="wishlistEmptyState" hidden>
+              <span class="cart-empty__icon" aria-hidden="true">♡</span>
+              <p>찜한 상품이 없습니다</p>
             </div>
 
-            <div class="product-grid">
+            <div class="list-toolbar" id="wishlistToolbar">
+              <span class="list-toolbar__count" id="wishlistCount">총 4개</span>
+              <button type="button" class="list-toolbar__clear" id="wishlistClearBtn">전체삭제</button>
+            </div>
+
+            <div class="product-grid" id="wishlistGrid">
               <a href="#" class="product-card">
                 <div class="product-card__thumb">
                   <span class="product-card__badge product-card__badge--new">신상</span>
@@ -1295,7 +1300,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-auth-compat.js" defer></script>
-  <script src="app.js?v=20260819-4" defer></script>
+  <script src="app.js?v=20260819-5" defer></script>
 
 </body>
 

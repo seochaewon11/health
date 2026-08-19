@@ -942,3 +942,43 @@ if (mypageLogoutBtn) {
 
   renderCart();
 })();
+
+// 찜한 상품 화면 — 하트(찜 해제) 버튼을 다시 누르면 그 카드를 목록에서 제거하고
+// 개수/빈 상태를 갱신한다. "전체삭제"도 같은 방식으로 전부 비운다.
+(function () {
+  var grid = document.getElementById('wishlistGrid');
+  var countEl = document.getElementById('wishlistCount');
+  var toolbarEl = document.getElementById('wishlistToolbar');
+  var emptyEl = document.getElementById('wishlistEmptyState');
+  var clearBtn = document.getElementById('wishlistClearBtn');
+
+  if (!grid) return;
+
+  function updateWishlistUI() {
+    var count = grid.querySelectorAll('.product-card').length;
+    if (countEl) countEl.textContent = '총 ' + count + '개';
+    var isEmpty = count === 0;
+    if (emptyEl) emptyEl.hidden = !isEmpty;
+    if (toolbarEl) toolbarEl.hidden = isEmpty;
+    grid.hidden = isEmpty;
+  }
+
+  grid.querySelectorAll('.product-card__like').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var card = btn.closest('.product-card');
+      if (card) card.remove();
+      updateWishlistUI();
+    });
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      grid.querySelectorAll('.product-card').forEach(function (card) { card.remove(); });
+      updateWishlistUI();
+    });
+  }
+
+  updateWishlistUI();
+})();
