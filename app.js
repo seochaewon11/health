@@ -711,6 +711,7 @@ function login() {
   saveLoginState();
   renderHeaderAuth();
   showToast('로그인 성공');
+  document.dispatchEvent(new CustomEvent('hcts:login'));
 }
 
 function loginWithGoogle() {
@@ -884,7 +885,7 @@ if (mypageLogoutBtn) {
     var totalQty = cartItems.reduce(function (sum, item) { return sum + item.qty; }, 0);
     badges.forEach(function (badge) {
       badge.textContent = totalQty > 99 ? '99+' : String(totalQty);
-      badge.hidden = totalQty <= 0;
+      badge.hidden = !isLoggedIn || totalQty <= 0;
     });
   }
 
@@ -961,6 +962,8 @@ if (mypageLogoutBtn) {
     cartItems = [];
     renderCart();
   });
+
+  document.addEventListener('hcts:login', renderBadges);
 
   function parsePrice(text) {
     var match = text.match(/([\d,]+)\s*원/);
