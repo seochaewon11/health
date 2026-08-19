@@ -188,12 +188,26 @@ function showToast(message) {
   var previewScroll = document.querySelector('.preview-scroll');
   var searchBarOverlay = document.getElementById('searchBarOverlay');
   var searchScreenInput = document.getElementById('searchScreenInput');
+  var tabbarItems = document.querySelectorAll('.bottom-tabbar__item');
+
+  // 하단 탭바는 5개 항목(카테고리/검색/홈/찜/마이페이지)만 있고 상세·장바구니 등
+  // 나머지 화면은 대응되는 탭이 없으므로, 그런 화면에서는 탭바가 전부 비활성 상태가 된다.
+  function setActiveTab(target) {
+    var activeKey = null;
+    Object.keys(screenMap).forEach(function (key) {
+      if (screenMap[key] === target) activeKey = key;
+    });
+    tabbarItems.forEach(function (item) {
+      item.classList.toggle('is-active', item.getAttribute('data-nav') === activeKey);
+    });
+  }
 
   function showScreen(target) {
     if (!target) return;
     screens.forEach(function (screen) {
       if (screen) screen.classList.toggle('is-active', screen === target);
     });
+    setActiveTab(target);
     if (previewScroll) previewScroll.scrollTop = 0;
     // 모바일 기본 레이아웃은 preview-scroll이 아니라 브라우저 창 자체가 스크롤되므로
     // (overflow: visible) 창 스크롤도 함께 최상단으로 되돌려야 짧은 화면(찜/마이페이지 등)
@@ -204,6 +218,8 @@ function showToast(message) {
       window.setTimeout(function () { searchScreenInput.focus(); }, 200);
     }
   }
+
+  setActiveTab(screenMap.main);
 
   document.querySelectorAll('[data-nav]').forEach(function (el) {
     el.addEventListener('click', function (e) {
