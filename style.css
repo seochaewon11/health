@@ -298,6 +298,14 @@ li {
   color: var(--text-sub);
 }
 
+#utilityAuthBtn {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+}
+
 .utility-bar__divider {
   font-size: 10px;
   color: var(--border);
