@@ -844,6 +844,46 @@ if (mypageLogoutBtn) {
     return { id: name, name: name, tag: '', price: parsePrice(priceEl.textContent), image: imgEl.getAttribute('src') };
   }
 
+  // 담기 버튼에서 현재 화면에 보이는 장바구니 아이콘(또는 메인 화면의 "장바구니" 필)까지
+  // 닭 이모지가 슝 날아가는 연출. 화면에 마땅한 목표 지점이 없으면(예: 검색 결과 화면)
+  // 조용히 건너뛴다 — 배지 자체는 어차피 renderBadges()로 이미 갱신돼 있다.
+  function flyToCart(fromEl) {
+    var target = document.querySelector('.screen.is-active .cart-icon-btn') ||
+      document.querySelector('.utility-bar__item[data-nav="cart"]');
+    if (!target || !fromEl) return;
+
+    var fromRect = fromEl.getBoundingClientRect();
+    var toRect = target.getBoundingClientRect();
+    var dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
+    var dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+
+    var flyEl = document.createElement('span');
+    flyEl.className = 'fly-to-cart';
+    flyEl.textContent = '🐔';
+    flyEl.style.left = (fromRect.left + fromRect.width / 2) + 'px';
+    flyEl.style.top = (fromRect.top + fromRect.height / 2) + 'px';
+    flyEl.style.transform = 'translate(-50%, -50%)';
+    document.body.appendChild(flyEl);
+
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        flyEl.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px)) scale(0.25) rotate(20deg)';
+        flyEl.style.opacity = '0.2';
+      });
+    });
+
+    var cleaned = false;
+    function cleanup() {
+      if (cleaned) return;
+      cleaned = true;
+      if (flyEl.parentNode) flyEl.parentNode.removeChild(flyEl);
+      target.classList.add('is-popping');
+      window.setTimeout(function () { target.classList.remove('is-popping'); }, 260);
+    }
+    flyEl.addEventListener('transitionend', cleanup);
+    window.setTimeout(cleanup, 700); // 안전장치 — transitionend가 안 붙는 예외 상황 대비
+  }
+
   function addToCart(product) {
     var existing = cartItems.filter(function (i) { return i.id === product.id; })[0];
     if (existing) {
@@ -856,10 +896,17 @@ if (mypageLogoutBtn) {
   }
 
   addButtons.forEach(function (btn) {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
+      // product-card__add는 카드(data-nav="detail") 안에 중첩돼 있으므로, 클릭이 카드로
+      // 버블링되어 상세 화면으로 튕겨나가지 않도록 막는다.
+      e.preventDefault();
+      e.stopPropagation();
       var card = btn.closest('.product-card');
       var product = card ? getProductFromCard(card) : getProductFromDetail();
-      if (product) addToCart(product);
+      if (product) {
+        addToCart(product);
+        flyToCart(btn);
+      }
     });
   });
 

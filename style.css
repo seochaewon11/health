@@ -60,14 +60,15 @@ body.event-popup-lock {
     position: fixed;
     top: 0;
     left: 0;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
+    border: 1.5px solid rgba(232, 98, 44, 0.85);
     background: radial-gradient(circle,
-        rgba(251, 228, 155, 0.85) 0%,
-        rgba(232, 98, 44, 0.35) 55%,
+        rgba(251, 228, 155, 0.95) 0%,
+        rgba(232, 98, 44, 0.6) 55%,
         rgba(232, 98, 44, 0) 78%);
-    filter: blur(2px);
+    box-shadow: 0 0 12px 2px rgba(232, 98, 44, 0.35);
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
@@ -254,7 +255,7 @@ li {
 .brand-reel {
   position: relative;
   margin-top: 28px;
-  height: 176px;
+  height: 220px;
   padding: 18px;
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.18);
@@ -299,6 +300,7 @@ li {
 
 .brand-reel__bubble--2 {
   background: var(--yellow);
+  align-self: flex-end;
 }
 
 .brand-reel__bubble--3 {
@@ -307,6 +309,7 @@ li {
 
 .brand-reel__bubble--4 {
   background: var(--blue);
+  align-self: flex-end;
 }
 
 .brand-reel__kw {
@@ -315,7 +318,12 @@ li {
 }
 
 .brand-reel__kw--light {
-  color: var(--accent);
+  color: #fff;
+  background: var(--accent);
+  padding: 2px 7px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-top: 4px;
 }
 
 .brand-reel__product {
@@ -333,17 +341,17 @@ li {
 }
 
 .brand-reel__product img {
-  width: 76px;
-  height: 76px;
+  width: 132px;
+  height: 132px;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 18px;
   flex-shrink: 0;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
 }
 
 .brand-reel__product p {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   line-height: 1.5;
   color: #fff;
 }
@@ -525,6 +533,7 @@ li {
 }
 
 .utility-bar__item[data-nav="cart"] {
+  position: relative;
   padding: 5px 12px;
   border-radius: 999px;
   border: 1px solid var(--accent);
@@ -1544,6 +1553,38 @@ li {
   line-height: 16px;
   text-align: center;
   border: 1.5px solid var(--bg);
+}
+
+/* 담기 버튼 → 장바구니 아이콘으로 슝 날아가는 이모지, 도착 시 아이콘이 팡 튀는 효과 */
+.fly-to-cart {
+  position: fixed;
+  left: 0;
+  top: 0;
+  font-size: 22px;
+  line-height: 1;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.55s cubic-bezier(0.3, 0, 0.4, 1), opacity 0.55s ease-in;
+}
+
+.cart-icon-btn.is-popping,
+.utility-bar__item[data-nav="cart"].is-popping {
+  animation: cart-icon-pop 0.26s ease-out;
+}
+
+@keyframes cart-icon-pop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 
