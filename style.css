@@ -48,6 +48,44 @@ body.event-popup-lock {
   overflow: hidden;
 }
 
+/* 커스텀 커서 글로우 — 딱딱한 네온 링 대신, 따뜻한 크림/오렌지 톤이 은은하게
+   번지는 빛무리로 마우스를 따라다닌다. 마우스가 있는 기기에서만 노출. */
+.cursor-glow {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cursor-glow {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(251, 228, 155, 0.85) 0%,
+        rgba(232, 98, 44, 0.35) 55%,
+        rgba(232, 98, 44, 0) 78%);
+    filter: blur(2px);
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.4s ease;
+  }
+
+  .cursor-glow.is-visible {
+    opacity: 1;
+  }
+
+  .cursor-glow.is-active {
+    width: 54px;
+    height: 54px;
+  }
+}
+
 a {
   text-decoration: none;
   color: inherit;
@@ -405,12 +443,21 @@ li {
   padding-bottom: 8px;
   white-space: nowrap;
   border-bottom: 2px solid transparent;
+  transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sub-nav__item.is-active {
   color: var(--brown);
   font-weight: 800;
   border-bottom-color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sub-nav__item:not(.is-active):hover {
+    color: var(--accent-dark);
+    border-bottom-color: var(--tan);
+  }
 }
 
 .preview-main {
@@ -1388,13 +1435,15 @@ li {
 @media (hover: hover) and (pointer: fine) {
 
   .product-card,
-  .ranking__card {
+  .ranking__card,
+  .time-deal__card {
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
       box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .product-card:hover,
-  .ranking__card:hover {
+  .ranking__card:hover,
+  .time-deal__card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 26px rgba(74, 47, 39, 0.16);
   }
