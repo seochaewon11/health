@@ -306,9 +306,16 @@ li {
   font-size: 12px;
 }
 
+.utility-bar__item[data-nav="cart"] {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  color: var(--accent-dark);
+  font-size: 12px;
+}
+
 .utility-bar__divider {
-  font-size: 10px;
-  color: var(--border);
+  display: none;
 }
 
 .site-header__search {
