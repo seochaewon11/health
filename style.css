@@ -596,10 +596,6 @@ li {
   width: 96px;
   height: 96px;
   object-fit: contain;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 10px 20px rgba(74, 47, 39, 0.12);
-  padding: 10px;
 }
 
 .story-compare__award {
