@@ -26,8 +26,8 @@
         <p class="brand-subcopy">갈아 만들지 않은 진짜 닭가슴살,<br>매일 먹고 싶은 촉촉함을 경험해보세요.</p>
 
         <div class="brand-search">
-          <input type="text" placeholder="오늘 뭐 먹지?" aria-label="검색" />
-          <button type="button" aria-label="검색하기">
+          <input type="text" id="brandSearchInput" placeholder="오늘 뭐 먹지?" aria-label="검색" />
+          <button type="button" id="brandSearchBtn" aria-label="검색하기">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"
@@ -37,9 +37,9 @@
         </div>
 
         <ul class="brand-tags">
-          <li>#100%통살</li>
-          <li>#저칼로리</li>
-          <li>#시즈닝닭가슴살</li>
+          <li role="button" tabindex="0">#100%통살</li>
+          <li role="button" tabindex="0">#저칼로리</li>
+          <li role="button" tabindex="0">#시즈닝닭가슴살</li>
         </ul>
       </div>
     </aside>
