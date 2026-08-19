@@ -229,33 +229,37 @@ function showToast(message) {
   }
 })();
 
-// 데스크탑 브랜드 패널 검색창/태그 — 우측 폰 프레임의 검색 화면으로 이동시키고
-// 입력값(또는 클릭한 태그)을 그대로 검색어로 채워준다.
+// 검색창 공통 — 메인 화면 상단 검색창, 데스크탑 브랜드 패널 검색창/태그 모두
+// 우측 폰 프레임의 검색 화면으로 이동시키고 입력값(또는 클릭한 태그)을 검색어로 채워준다.
 (function () {
+  var mainSearchInput = document.getElementById('mainSearchInput');
+  var mainSearchBtn = document.getElementById('mainSearchBtn');
   var brandSearchInput = document.getElementById('brandSearchInput');
   var brandSearchBtn = document.getElementById('brandSearchBtn');
   var brandTags = document.querySelectorAll('.brand-tags li');
   var searchScreenInput = document.getElementById('searchScreenInput');
   var searchNavTrigger = document.querySelector('[data-nav="search"]');
 
-  if (!brandSearchInput && !brandTags.length) return;
-
   function goToSearch(query) {
     if (searchScreenInput && query) searchScreenInput.value = query;
     if (searchNavTrigger) searchNavTrigger.click();
   }
 
-  if (brandSearchBtn) {
-    brandSearchBtn.addEventListener('click', function () {
-      goToSearch(brandSearchInput ? brandSearchInput.value.trim() : '');
-    });
+  function wireSearchField(input, btn) {
+    if (btn) {
+      btn.addEventListener('click', function () {
+        goToSearch(input ? input.value.trim() : '');
+      });
+    }
+    if (input) {
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') goToSearch(input.value.trim());
+      });
+    }
   }
 
-  if (brandSearchInput) {
-    brandSearchInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') goToSearch(brandSearchInput.value.trim());
-    });
-  }
+  wireSearchField(mainSearchInput, mainSearchBtn);
+  wireSearchField(brandSearchInput, brandSearchBtn);
 
   brandTags.forEach(function (tag) {
     tag.addEventListener('click', function () {
