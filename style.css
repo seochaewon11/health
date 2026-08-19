@@ -210,6 +210,11 @@ li {
   background: var(--bg);
 }
 
+.brand-panel__deco,
+.preview-panel__deco {
+  display: none;
+}
+
 .preview-scroll {
   position: relative;
   width: 100%;
@@ -3261,6 +3266,17 @@ li {
     left: -50px;
   }
 
+  .brand-panel__deco {
+    display: block;
+    position: absolute;
+    width: clamp(140px, 18vw, 220px);
+    right: -24px;
+    bottom: -24px;
+    z-index: 0;
+    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.25));
+    transform: rotate(-6deg);
+  }
+
   /* 우측: 앱 화면을 폰 프레임 안에 넣어 프리뷰 형태로 표시 */
   .preview-panel {
     display: flex;
@@ -3302,6 +3318,28 @@ li {
     opacity: 0.4;
     bottom: -90px;
     right: -70px;
+  }
+
+  .preview-panel__deco {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 16px 22px rgba(74, 47, 39, 0.25));
+  }
+
+  .preview-panel__deco--1 {
+    width: clamp(90px, 9vw, 130px);
+    left: calc(50% - 260px);
+    bottom: 12%;
+    transform: rotate(-10deg);
+  }
+
+  .preview-panel__deco--2 {
+    width: clamp(70px, 7vw, 100px);
+    right: calc(50% - 240px);
+    top: 14%;
+    transform: rotate(12deg);
   }
 
   .preview-scroll {
