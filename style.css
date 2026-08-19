@@ -3541,7 +3541,7 @@ li {
 
   .layout {
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: minmax(360px, 32%) 1fr;
   }
 
   /* 좌측 브랜드 소개 영역 노출 */
