@@ -115,6 +115,8 @@ li {
 
 .brand-panel__inner {
   max-width: 420px;
+  position: relative;
+  z-index: 1;
 }
 
 .brand-logo {
@@ -3222,8 +3224,41 @@ li {
     flex-direction: column;
     justify-content: center;
     padding: clamp(32px, 6vw, 64px) clamp(24px, 5vw, 56px);
-    background: var(--brown);
+    background:
+      radial-gradient(circle at 12% 12%, rgba(232, 98, 44, 0.4), transparent 42%),
+      radial-gradient(circle at 88% 82%, rgba(246, 228, 212, 0.16), transparent 46%),
+      var(--brown);
     color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-panel::before,
+  .brand-panel::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .brand-panel::before {
+    width: 280px;
+    height: 280px;
+    background: var(--accent);
+    opacity: 0.3;
+    top: -90px;
+    right: -70px;
+  }
+
+  .brand-panel::after {
+    width: 220px;
+    height: 220px;
+    background: var(--tan);
+    opacity: 0.16;
+    bottom: -70px;
+    left: -50px;
   }
 
   /* 우측: 앱 화면을 폰 프레임 안에 넣어 프리뷰 형태로 표시 */
@@ -3232,8 +3267,41 @@ li {
     align-items: center;
     justify-content: center;
     padding: 40px 24px;
-    background: #F1E4D8;
+    background:
+      radial-gradient(circle at 18% 15%, rgba(232, 98, 44, 0.14), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(251, 228, 155, 0.4), transparent 45%),
+      #F1E4D8;
     min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .preview-panel::before,
+  .preview-panel::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .preview-panel::before {
+    width: 340px;
+    height: 340px;
+    background: var(--accent);
+    opacity: 0.16;
+    top: -110px;
+    left: -90px;
+  }
+
+  .preview-panel::after {
+    width: 280px;
+    height: 280px;
+    background: var(--yellow);
+    opacity: 0.4;
+    bottom: -90px;
+    right: -70px;
   }
 
   .preview-scroll {
@@ -3249,6 +3317,8 @@ li {
     scrollbar-width: none;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 1;
   }
 
   .preview-scroll::-webkit-scrollbar {
