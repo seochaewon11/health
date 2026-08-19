@@ -342,6 +342,7 @@ var googleProvider = new firebase.auth.GoogleAuthProvider();
 var loginOverlay = document.getElementById('loginOverlay');
 var loginModalCloseBtn = document.getElementById('loginModalClose');
 var mypageLogoutBtn = document.getElementById('mypageLogoutBtn');
+var mypageAuthLabel = document.getElementById('mypageAuthLabel');
 var utilityAuthBtn = document.getElementById('utilityAuthBtn');
 var headerProfileView = document.getElementById('headerProfileView');
 var LOGIN_STORAGE_KEY = 'hcts_isLoggedIn';
@@ -367,6 +368,7 @@ var isLoggedIn = loadLoginState();
 function renderHeaderAuth() {
   if (utilityAuthBtn) utilityAuthBtn.textContent = isLoggedIn ? '로그아웃' : '로그인';
   if (headerProfileView) headerProfileView.hidden = !isLoggedIn;
+  if (mypageAuthLabel) mypageAuthLabel.textContent = isLoggedIn ? '로그아웃' : '로그인';
 }
 
 function openLogin() {
@@ -436,7 +438,8 @@ if (utilityAuthBtn) {
 if (mypageLogoutBtn) {
   mypageLogoutBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    logout();
+    if (isLoggedIn) logout();
+    else openLogin();
   });
 }
 
