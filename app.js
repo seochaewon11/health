@@ -207,6 +207,28 @@ function showToast(message) {
   if (closeBtn) closeBtn.addEventListener('click', closeSearch);
 })();
 
+// 검색 화면 자체의 검색 버튼 — 실제 검색 결과 목록이 없는 프로토타입이라
+// 클릭/Enter 시 토스트로 "검색이 실행됐다"는 피드백만 준다.
+(function () {
+  var searchScreenInput = document.getElementById('searchScreenInput');
+  var searchScreenSubmitBtn = document.getElementById('searchScreenSubmitBtn');
+
+  if (!searchScreenSubmitBtn) return;
+
+  function submitSearch() {
+    var query = searchScreenInput ? searchScreenInput.value.trim() : '';
+    showToast(query ? '"' + query + '" 검색 결과예요' : '검색어를 입력해주세요');
+  }
+
+  searchScreenSubmitBtn.addEventListener('click', submitSearch);
+
+  if (searchScreenInput) {
+    searchScreenInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submitSearch();
+    });
+  }
+})();
+
 // 데스크탑 브랜드 패널 검색창/태그 — 우측 폰 프레임의 검색 화면으로 이동시키고
 // 입력값(또는 클릭한 태그)을 그대로 검색어로 채워준다.
 (function () {

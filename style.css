@@ -2741,6 +2741,17 @@ li {
   color: var(--text-sub);
 }
 
+.search-header__field button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
 .search-header__field input {
   flex: 1;
   border: none;
