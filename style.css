@@ -154,6 +154,8 @@ li {
 
 .brand-panel__inner {
   max-width: 420px;
+  position: relative;
+  z-index: 1;
 }
 
 .brand-logo {
@@ -3550,6 +3552,26 @@ li {
     padding: clamp(32px, 6vw, 64px) clamp(24px, 5vw, 56px);
     background: var(--brown);
     color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 텍스트가 좌측에 몰려 우측에 여백이 남는 문제를 보완하는 보조 그래픽 —
+     패널 우측 가장자리에 붙여 배치하고, 왼쪽 경계는 배경색으로 자연스럽게
+     녹아들도록 마스크로 페이드 처리한다. */
+  .brand-panel__shot {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 46%;
+    object-fit: cover;
+    object-position: left center;
+    opacity: 0.9;
+    z-index: 0;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 30%);
+    mask-image: linear-gradient(to right, transparent, #000 30%);
   }
 
   /* 우측: 앱 화면을 폰 프레임 안에 넣어 프리뷰 형태로 표시 */
