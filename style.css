@@ -248,13 +248,13 @@ li {
   color: #fff;
 }
 
-/* 브랜드 패널 인트로 릴 — 짧은 카피 말풍선이 위→아래로 쌓이며 나타났다가,
-   상품 컷으로 전환되는 걸 무한 반복하는 GIF 느낌의 자체 재생 루프.
-   전부 CSS 애니메이션의 % 타임라인으로 맞춰져 있어 매 루프 자동으로 처음부터 다시 시작된다. */
+/* 브랜드 패널 인트로 릴 — ① 키워드 말풍선이 위→아래로 쌓이고 → ② chicken.gif 상품 컷 →
+   ③ 실제 후기가 타이핑되는 3단계를 JS(app.js)가 순서대로 재생·반복하는 GIF 느낌의 루프.
+   여기서는 각 단계 전환에 쓰이는 트랜지션만 정의한다. */
 .brand-reel {
   position: relative;
   margin-top: 28px;
-  height: 168px;
+  height: 176px;
   padding: 18px;
   border-radius: 20px;
   background: rgba(0, 0, 0, 0.18);
@@ -262,9 +262,14 @@ li {
   overflow: hidden;
 }
 
-.brand-reel__bubbles {
+.brand-reel__bubbles,
+.brand-reel__product,
+.brand-reel__reviews {
   position: absolute;
   inset: 18px;
+}
+
+.brand-reel__bubbles {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -272,7 +277,7 @@ li {
 
 .brand-reel__bubble {
   align-self: flex-start;
-  max-width: 90%;
+  max-width: 92%;
   padding: 7px 14px;
   border-radius: 999px;
   font-size: 12.5px;
@@ -280,40 +285,51 @@ li {
   color: var(--brown);
   opacity: 0;
   transform: translateY(8px);
-  animation-duration: 10s;
-  animation-timing-function: ease-out;
-  animation-iteration-count: infinite;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.brand-reel__bubble.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .brand-reel__bubble--1 {
   background: var(--tan);
-  animation-name: brand-reel-b1;
 }
 
 .brand-reel__bubble--2 {
   background: var(--yellow);
-  animation-name: brand-reel-b2;
 }
 
 .brand-reel__bubble--3 {
   background: var(--pink);
-  animation-name: brand-reel-b3;
 }
 
 .brand-reel__bubble--4 {
   background: var(--blue);
-  animation-name: brand-reel-b4;
+}
+
+.brand-reel__kw {
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
+.brand-reel__kw--light {
+  color: var(--accent);
 }
 
 .brand-reel__product {
-  position: absolute;
-  inset: 18px;
   display: flex;
   align-items: center;
   gap: 14px;
   opacity: 0;
   transform: translateY(8px);
-  animation: brand-reel-product 10s ease-out infinite;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.brand-reel__product.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .brand-reel__product img {
@@ -332,108 +348,59 @@ li {
   color: #fff;
 }
 
-@keyframes brand-reel-b1 {
-
-  0%,
-  3% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  7%,
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  55%,
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
+.brand-reel__reviews {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
 }
 
-@keyframes brand-reel-b2 {
-
-  0%,
-  11% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  15%,
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  55%,
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
+.brand-reel__line {
+  position: relative;
+  padding-left: 22px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #F3E7DF;
+  min-height: 1.5em;
 }
 
-@keyframes brand-reel-b3 {
-
-  0%,
-  19% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  23%,
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  55%,
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
+.brand-reel__line::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent);
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-@keyframes brand-reel-b4 {
-
-  0%,
-  27% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  31%,
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  55%,
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
+.brand-reel__line.is-typing::before,
+.brand-reel__line.is-done::before {
+  opacity: 1;
 }
 
-@keyframes brand-reel-product {
+.brand-reel__line.is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: brand-reel-blink 0.8s steps(1, end) infinite;
+}
+
+@keyframes brand-reel-blink {
 
   0%,
-  55% {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  60%,
-  85% {
+  49% {
     opacity: 1;
-    transform: translateY(0);
   }
 
-  90%,
+  50%,
   100% {
     opacity: 0;
-    transform: translateY(-6px);
   }
 }
 

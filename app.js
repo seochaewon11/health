@@ -1,3 +1,95 @@
+// 브랜드 패널 인트로 릴 — ① 키워드 말풍선이 위→아래로 쌓였다가 ② chicken.gif 상품 컷으로
+// 전환되고 ③ 실제 후기가 한 줄씩 타이핑되는 3단계를 순서대로 재생한 뒤, 전부 초기화하고
+// 처음부터 다시 반복한다(중첩 setTimeout으로 각 단계가 끝나야 다음 단계가 시작됨).
+(function () {
+  var bubbles = document.querySelectorAll('.brand-reel__bubble');
+  var product = document.querySelector('.brand-reel__product');
+  var reviewLines = document.querySelectorAll('.brand-reel__line');
+
+  if (!bubbles.length && !product && !reviewLines.length) return;
+
+  var BUBBLE_FIRST_DELAY = 300;
+  var BUBBLE_STAGGER = 700;
+  var BUBBLE_HOLD = 1800;
+  var FADE_OUT_WAIT = 400;
+  var PRODUCT_HOLD = 2600;
+  var TYPE_SPEED = 32;
+  var LINE_PAUSE = 500;
+  var REVIEWS_HOLD = 1200;
+  var CYCLE_GAP = 900;
+
+  function showBubbles(onDone) {
+    if (!bubbles.length) { onDone(); return; }
+    bubbles.forEach(function (b, i) {
+      window.setTimeout(function () {
+        b.classList.add('is-visible');
+      }, BUBBLE_FIRST_DELAY + i * BUBBLE_STAGGER);
+    });
+    var totalIn = BUBBLE_FIRST_DELAY + (bubbles.length - 1) * BUBBLE_STAGGER;
+    window.setTimeout(function () {
+      bubbles.forEach(function (b) { b.classList.remove('is-visible'); });
+      window.setTimeout(onDone, FADE_OUT_WAIT);
+    }, totalIn + BUBBLE_HOLD);
+  }
+
+  function showProduct(onDone) {
+    if (!product) { onDone(); return; }
+    product.classList.add('is-visible');
+    window.setTimeout(function () {
+      product.classList.remove('is-visible');
+      window.setTimeout(onDone, FADE_OUT_WAIT);
+    }, PRODUCT_HOLD);
+  }
+
+  function typeLine(index, onAllDone) {
+    if (index >= reviewLines.length) { onAllDone(); return; }
+    var el = reviewLines[index];
+    var text = el.getAttribute('data-text') || '';
+    var i = 0;
+    el.classList.add('is-typing');
+    (function step() {
+      el.textContent = text.slice(0, i);
+      i++;
+      if (i <= text.length) {
+        window.setTimeout(step, TYPE_SPEED);
+      } else {
+        el.classList.remove('is-typing');
+        el.classList.add('is-done');
+        window.setTimeout(function () { typeLine(index + 1, onAllDone); }, LINE_PAUSE);
+      }
+    })();
+  }
+
+  function showReviews(onDone) {
+    if (!reviewLines.length) { onDone(); return; }
+    typeLine(0, function () {
+      window.setTimeout(onDone, REVIEWS_HOLD);
+    });
+  }
+
+  function resetAll() {
+    bubbles.forEach(function (b) { b.classList.remove('is-visible'); });
+    if (product) product.classList.remove('is-visible');
+    reviewLines.forEach(function (el) {
+      el.textContent = '';
+      el.classList.remove('is-typing', 'is-done');
+    });
+  }
+
+  function runCycle() {
+    showBubbles(function () {
+      showProduct(function () {
+        showReviews(function () {
+          resetAll();
+          window.setTimeout(runCycle, CYCLE_GAP);
+        });
+      });
+    });
+  }
+
+  runCycle();
+})();
+
 // 커스텀 커서 글로우 — 마우스를 살짝의 지연(lerp)을 두고 따라다니다가, 버튼/링크/
 // 카드/탭 위에서는 커지면서 반응한다. 터치 기기에는 마우스가 없으므로 건너뛴다.
 (function () {
