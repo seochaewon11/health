@@ -725,6 +725,7 @@ function logout() {
   saveLoginState();
   renderHeaderAuth();
   showToast('로그아웃 되었습니다');
+  document.dispatchEvent(new CustomEvent('hcts:logout'));
 }
 
 renderHeaderAuth();
@@ -929,6 +930,11 @@ if (mypageLogoutBtn) {
     renderEmptyState();
     saveCartItems();
   }
+
+  document.addEventListener('hcts:logout', function () {
+    cartItems = [];
+    renderCart();
+  });
 
   function parsePrice(text) {
     var match = text.match(/([\d,]+)\s*원/);
