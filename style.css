@@ -319,12 +319,15 @@ li {
   color: #fff;
   font-size: 12px;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #utilityAuthBtn:hover {
   background: var(--accent-dark);
   transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(232, 98, 44, 0.35);
 }
 
 .utility-bar__item[data-nav="cart"] {
@@ -334,12 +337,15 @@ li {
   color: var(--accent-dark);
   font-size: 12px;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .utility-bar__item[data-nav="cart"]:hover {
   background: rgba(232, 98, 44, 0.1);
   transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(232, 98, 44, 0.15);
 }
 
 .utility-bar__divider {
