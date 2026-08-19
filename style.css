@@ -1135,6 +1135,7 @@ li {
   padding: 14px 16px;
   box-shadow: 0 12px 28px rgba(74, 47, 39, 0.18);
   z-index: 20;
+  cursor: pointer;
 }
 
 .screen--main.is-active~.welcome-popup {

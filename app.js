@@ -527,13 +527,96 @@ document.querySelectorAll('.sub-nav').forEach(function (nav) {
   });
 })();
 
+// 쿠폰함 — 마이페이지 요약/쿠폰함 화면의 보유 쿠폰 목록을 하나의 상태로 관리한다.
+// 웰컴 팝업에서 쿠폰을 받으면 이 상태에 추가되어 두 화면 모두에 반영된다.
+(function () {
+  var countEls = [
+    document.getElementById('mypageCouponCount'),
+    document.getElementById('couponSummaryCount')
+  ].filter(Boolean);
+  var listEl = document.getElementById('couponList');
+  var COUPON_STORAGE_KEY = 'hcts_coupons';
+  var defaultCoupons = [
+    { name: '5,000원 할인 쿠폰', expires: '2026.09.30' },
+    { name: '무료배송 쿠폰', expires: '2026.08.31' }
+  ];
+
+  function loadCoupons() {
+    try {
+      var raw = localStorage.getItem(COUPON_STORAGE_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      return Array.isArray(parsed) ? parsed : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  var coupons = loadCoupons() || defaultCoupons.slice();
+
+  function saveCoupons() {
+    try {
+      localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(coupons));
+    } catch (e) {
+      // 저장 불가 환경에서는 조용히 무시
+    }
+  }
+
+  function renderCoupons() {
+    countEls.forEach(function (el) { el.textContent = coupons.length + '장'; });
+    if (listEl) {
+      listEl.innerHTML = '';
+      coupons.forEach(function (c) {
+        var li = document.createElement('li');
+        li.className = 'info-list__item';
+        li.innerHTML = '<p>' + c.name + '</p><span class="info-list__date">' + c.expires + '까지</span>';
+        listEl.appendChild(li);
+      });
+    }
+    saveCoupons();
+  }
+
+  window.hctsAddCoupon = function (coupon) {
+    coupons.unshift(coupon);
+    renderCoupons();
+  };
+
+  renderCoupons();
+})();
+
 (function () {
   var popup = document.getElementById('welcomePopup');
   var closeBtn = document.getElementById('welcomePopupClose');
 
   if (!popup || !closeBtn) return;
 
+  var WELCOME_CLAIMED_KEY = 'hcts_welcomeCouponClaimed';
+
+  if (localStorage.getItem(WELCOME_CLAIMED_KEY) === '1') {
+    popup.style.display = 'none';
+  }
+
   closeBtn.addEventListener('click', function () {
+    popup.style.display = 'none';
+  });
+
+  popup.addEventListener('click', function (e) {
+    if (e.target.closest('#welcomePopupClose')) return;
+    if (localStorage.getItem(WELCOME_CLAIMED_KEY) === '1') return;
+
+    try {
+      localStorage.setItem(WELCOME_CLAIMED_KEY, '1');
+    } catch (err) {
+      // 저장 불가 환경에서는 조용히 무시
+    }
+
+    var expires = new Date();
+    expires.setDate(expires.getDate() + 30);
+    var expiresLabel = expires.getFullYear() + '.' + String(expires.getMonth() + 1).padStart(2, '0') + '.' + String(expires.getDate()).padStart(2, '0');
+
+    if (window.hctsAddCoupon) {
+      window.hctsAddCoupon({ name: '웰컴 50% 할인 쿠폰', expires: expiresLabel });
+    }
+    showToast('웰컴 쿠폰이 발급되었습니다!');
     popup.style.display = 'none';
   });
 })();
