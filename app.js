@@ -656,6 +656,11 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var googleProvider = new firebase.auth.GoogleAuthProvider();
 
+// 카카오 로그인 초기화 — 카카오 개발자센터의 JavaScript 키 사용
+if (window.Kakao && !Kakao.isInitialized()) {
+  Kakao.init('f6e9174ad1aecb9413bfa5dad9550129');
+}
+
 // 로그인 상태 관리 — 장바구니의 주문하기 버튼처럼 로그인 후에만 진행 가능한
 // 동작에서 재사용할 수 있도록 전역(파일 스코프)에 둔다. 상태는 새로고침해도
 // 유지되도록 localStorage에 저장한다.
@@ -720,6 +725,23 @@ function loginWithGoogle() {
     });
 }
 
+function loginWithKakao() {
+  if (!window.Kakao || !Kakao.isInitialized()) {
+    showToast('카카오 로그인을 사용할 수 없습니다');
+    return;
+  }
+  Kakao.Auth.login({
+    success: function () {
+      closeLogin();
+      login();
+    },
+    fail: function (error) {
+      console.error('카카오 로그인 실패:', error);
+      showToast('카카오 로그인에 실패했습니다');
+    }
+  });
+}
+
 function logout() {
   isLoggedIn = false;
   saveLoginState();
@@ -741,6 +763,10 @@ if (loginOverlay) {
     btn.addEventListener('click', function () {
       if (btn.classList.contains('login-btn--google')) {
         loginWithGoogle();
+        return;
+      }
+      if (btn.classList.contains('login-btn--kakao')) {
+        loginWithKakao();
         return;
       }
       closeLogin();
