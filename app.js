@@ -1159,6 +1159,60 @@ if (mypageLogoutBtn) {
   renderCart();
 })();
 
+// 토스페이먼츠 연동 — 주문결제 화면의 "결제하기" 버튼 클릭 시 결제창을 띄운다.
+(function () {
+  if (typeof TossPayments !== 'function') return;
+
+  var payBtn = document.getElementById('checkoutPayBtn');
+  if (!payBtn) return;
+
+  var TOSS_CLIENT_KEY = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+  var tossPayments = TossPayments(TOSS_CLIENT_KEY);
+
+  function generateOrderId() {
+    return 'order-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  function getCheckoutAmount() {
+    var totalEl = document.querySelector('.checkout-summary__row--total span:last-child');
+    if (!totalEl) return 0;
+    return Number(totalEl.textContent.replace(/[^0-9]/g, ''));
+  }
+
+  function getCheckoutOrderName() {
+    var itemNames = Array.prototype.map.call(
+      document.querySelectorAll('.checkout-item__info h4'),
+      function (el) { return el.textContent.trim(); }
+    );
+    if (itemNames.length === 0) return '한끼통살 주문';
+    if (itemNames.length === 1) return itemNames[0];
+    return itemNames[0] + ' 외 ' + (itemNames.length - 1) + '건';
+  }
+
+  payBtn.addEventListener('click', function () {
+    var amount = getCheckoutAmount();
+    if (!amount) {
+      showToast('결제 금액을 확인할 수 없습니다');
+      return;
+    }
+
+    var selectedMethod = document.querySelector('input[name="payment"]:checked');
+    var method = selectedMethod ? selectedMethod.value : '카드';
+
+    tossPayments.requestPayment(method, {
+      amount: amount,
+      orderId: generateOrderId(),
+      orderName: getCheckoutOrderName(),
+      successUrl: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'success.html',
+      failUrl: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'fail.html'
+    }).catch(function (error) {
+      if (error.code === 'USER_CANCEL') return;
+      console.error('토스페이먼츠 결제 요청 실패:', error);
+      showToast('결제 요청에 실패했습니다');
+    });
+  });
+})();
+
 // 찜한 상품 화면 — 하트(찜 해제) 버튼을 다시 누르면 그 카드를 목록에서 제거하고
 // 개수/빈 상태를 갱신한다. "전체삭제"도 같은 방식으로 전부 비운다.
 (function () {
