@@ -421,18 +421,87 @@ function showToast(message) {
   });
 })();
 
-// 서브 내비게이션(한끼픽 / 60% 할인 / 베스트 등) — 클릭한 탭으로 활성 표시(밑줄)가
-// 옮겨가도록 같은 <nav> 안의 형제 탭들끼리 is-active를 토글한다. 화면 이동은
-// data-nav의 몫이고, 여기서는 순수하게 시각적 선택 상태만 관리한다.
-document.querySelectorAll('.sub-nav').forEach(function (nav) {
-  nav.querySelectorAll('.sub-nav__item').forEach(function (tab) {
+// 서브 내비게이션(한끼픽 / 60% 할인 / 베스트 / 신상품 / 이벤트) — 탭마다 다른
+// 상품 사진·이름·가격으로 상품목록 그리드를 채운다. 메인 화면과 상품목록 화면
+// 양쪽에 같은 탭 UI가 따로 존재해서, data-tab 값을 기준으로 두 곳의 활성 표시를
+// 함께 맞추고 그리드는 한 번만 다시 그린다.
+(function () {
+  var PRODUCT_TABS = {
+    pick: [
+      { img: 'img/list001.png', alt: '그릴드 바베큐 통살', badge: '신상', badgeType: 'new', name: '그릴드 바베큐 통살', discount: '50%', price: '10,900원', original: '21,900원' },
+      { img: 'img/list002.png', alt: '갈릭 허브 통살', badge: '신상', badgeType: 'new', name: '갈릭 허브 통살', discount: '50%', price: '10,900원', original: '21,900원' },
+      { img: 'img/list003.png', alt: '갈릭 허브 통살 10팩 세트', name: '갈릭 허브 통살 10팩 세트', discount: '50%', price: '10,900원', original: '21,900원' },
+      { img: 'img/list004.png', alt: '핵불닭맛 통살', badge: '타임특가', badgeType: 'deal', name: '핵불닭맛 통살', discount: '50%', price: '10,900원', original: '21,900원' }
+    ],
+    sale: [
+      { img: 'img/main006.png', alt: '촉촉한 닭가슴살 오리지널 도시락', badge: '60%', badgeType: 'deal', name: '촉촉한 닭가슴살 오리지널 도시락', discount: '60%', price: '8,900원', original: '22,900원' },
+      { img: 'img/main002.png', alt: '담백 오리지널 통살', badge: '60%', badgeType: 'deal', name: '담백 오리지널 통살', discount: '60%', price: '7,900원', original: '19,900원' },
+      { img: 'img/main003.png', alt: '그릴드 스테이크 통살', name: '그릴드 스테이크 통살', discount: '60%', price: '8,300원', original: '20,900원' },
+      { img: 'img/main004.png', alt: '한끼통살 스탠딩 파우치 5입', name: '한끼통살 스탠딩 파우치 5입', discount: '60%', price: '9,900원', original: '24,900원' }
+    ],
+    best: [
+      { img: 'img/main007.png', alt: '그릴드 샐러드 플레이트', badge: '베스트', badgeType: 'new', name: '그릴드 샐러드 플레이트', discount: '35%', price: '12,900원', original: '19,900원' },
+      { img: 'img/main008.png', alt: '매콤소스 그릴드 통살', badge: '베스트', badgeType: 'new', name: '매콤소스 그릴드 통살', discount: '35%', price: '12,900원', original: '19,900원' },
+      { img: 'img/cart002.png', alt: '그릴드 아스파라거스 플레이트', name: '그릴드 아스파라거스 플레이트', discount: '30%', price: '13,900원', original: '19,900원' },
+      { img: 'img/cart001.png', alt: '한끼통살 스탠딩 파우치 5종', name: '한끼통살 스탠딩 파우치 5종', discount: '30%', price: '13,900원', original: '19,900원' }
+    ],
+    new: [
+      { img: 'img/main009.png', alt: '신상 매콤소스 통살', badge: '신상', badgeType: 'new', name: '신상 매콤소스 통살', discount: '20%', price: '15,900원', original: '19,900원' },
+      { img: 'img/main010.png', alt: '신상 매콤소스 통살 플레이트', badge: '신상', badgeType: 'new', name: '신상 매콤소스 통살 플레이트', discount: '20%', price: '15,900원', original: '19,900원' },
+      { img: 'img/story001.png', alt: '플레임 그릴드 통살 스킬렛', badge: '신상', badgeType: 'new', name: '플레임 그릴드 통살 스킬렛', discount: '20%', price: '16,900원', original: '20,900원' },
+      { img: 'img/main004.png', alt: '한끼통살 스탠딩 파우치 5입', name: '한끼통살 스탠딩 파우치 5입', discount: '20%', price: '15,900원', original: '19,900원' }
+    ],
+    event: [
+      { img: 'img/story002.png', alt: '그릴드 스탠딩 파우치 5종 이벤트팩', badge: '이벤트', badgeType: 'deal', name: '그릴드 스탠딩 파우치 5종 이벤트팩', discount: '50%', price: '12,900원', original: '25,900원' },
+      { img: 'img/main001.png', alt: '오리지널 레드페퍼 출시 이벤트', badge: '이벤트', badgeType: 'deal', name: '오리지널 레드페퍼 출시 기념팩', discount: '50%', price: '10,900원', original: '21,900원' },
+      { img: 'img/main008.png', alt: '매콤소스 그릴드 통살', name: '매콤소스 그릴드 통살 이벤트가', discount: '40%', price: '11,900원', original: '19,900원' },
+      { img: 'img/cart001.png', alt: '한끼통살 스탠딩 파우치', name: '한끼통살 스탠딩 파우치 이벤트가', discount: '40%', price: '9,900원', original: '16,900원' }
+    ]
+  };
+
+  var grid = document.getElementById('listProductGrid');
+  var cards = grid ? grid.querySelectorAll('.product-card') : [];
+
+  function renderProductTab(tabKey) {
+    var items = PRODUCT_TABS[tabKey];
+    if (!items || !cards.length) return;
+    cards.forEach(function (card, i) {
+      var item = items[i];
+      if (!item) return;
+      var img = card.querySelector('[data-card-img]');
+      var name = card.querySelector('[data-card-name]');
+      var discount = card.querySelector('[data-card-discount]');
+      var price = card.querySelector('[data-card-price]');
+      var original = card.querySelector('[data-card-original]');
+      var badge = card.querySelector('[data-card-badge]');
+      if (img) { img.setAttribute('src', item.img); img.setAttribute('alt', item.alt); }
+      if (name) name.textContent = item.name;
+      if (discount) discount.textContent = item.discount;
+      if (price) price.textContent = item.price;
+      if (original) original.textContent = item.original;
+      if (badge) {
+        badge.hidden = !item.badge;
+        badge.textContent = item.badge || '';
+        badge.className = 'product-card__badge' + (item.badgeType === 'deal' ? ' product-card__badge--deal' : ' product-card__badge--new');
+      }
+    });
+  }
+
+  // 첫 화면(한끼픽)도 이 함수로 한 번 그려서, 정적 마크업과 위 데이터가 어긋날
+  // 걱정 없이 항상 같은 소스에서 나오게 한다.
+  renderProductTab('pick');
+
+  document.querySelectorAll('[data-tab]').forEach(function (tab) {
     tab.addEventListener('click', function () {
-      nav.querySelectorAll('.sub-nav__item').forEach(function (t) {
-        t.classList.toggle('is-active', t === tab);
+      var tabKey = tab.getAttribute('data-tab');
+      document.querySelectorAll('[data-tab]').forEach(function (t) {
+        t.classList.toggle('is-active', t.getAttribute('data-tab') === tabKey);
       });
+      renderProductTab(tabKey);
+      if (grid) grid.scrollTop = 0;
     });
   });
-});
+})();
 
 (function () {
   var overlay = document.getElementById('searchBarOverlay');
