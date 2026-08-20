@@ -2390,8 +2390,7 @@ li {
 
 .detail-promo__image {
   width: 120px;
-  height: 120px;
-  object-fit: cover;
+  height: auto;
   border-radius: 16px;
   box-shadow: 0 10px 20px rgba(74, 47, 39, 0.12);
 }
