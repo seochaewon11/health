@@ -1161,13 +1161,24 @@ if (mypageLogoutBtn) {
 
 // 토스페이먼츠 연동 — 주문결제 화면의 "결제하기" 버튼 클릭 시 결제창을 띄운다.
 (function () {
-  if (typeof TossPayments !== 'function') return;
-
   var payBtn = document.getElementById('checkoutPayBtn');
   if (!payBtn) return;
 
-  var TOSS_CLIENT_KEY = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
-  var tossPayments = TossPayments(TOSS_CLIENT_KEY);
+  var TOSS_CLIENT_KEY = 'test_ck_DnyRpQWGrND0KRN7d7pg3Kwv1M9E';
+  var tossPaymentsInstance = null;
+
+  // SDK 스크립트가 아직 로드되지 않았거나 키 포맷이 SDK 버전과 안 맞으면
+  // TossPayments() 호출 자체가 실패할 수 있다. 여기서 최상단에 두면 이 IIFE
+  // 전체가 죽어서 결제하기 버튼에 리스너가 안 붙는 채로 조용히 실패하므로,
+  // 클릭 시점에 지연 초기화하고 실패를 토스트로 드러낸다.
+  function getTossPayments() {
+    if (tossPaymentsInstance) return tossPaymentsInstance;
+    if (typeof TossPayments !== 'function') {
+      throw new Error('토스페이먼츠 SDK가 아직 로드되지 않았습니다');
+    }
+    tossPaymentsInstance = TossPayments(TOSS_CLIENT_KEY);
+    return tossPaymentsInstance;
+  }
 
   function generateOrderId() {
     return 'order-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
@@ -1196,6 +1207,15 @@ if (mypageLogoutBtn) {
       return;
     }
 
+    var tossPayments;
+    try {
+      tossPayments = getTossPayments();
+    } catch (error) {
+      console.error('토스페이먼츠 초기화 실패:', error);
+      showToast('결제 모듈을 불러오지 못했습니다. 잠시 후 다시 시도해주세요');
+      return;
+    }
+
     var selectedMethod = document.querySelector('input[name="payment"]:checked');
     var method = selectedMethod ? selectedMethod.value : '카드';
 
@@ -1206,7 +1226,7 @@ if (mypageLogoutBtn) {
       successUrl: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'success.html',
       failUrl: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'fail.html'
     }).catch(function (error) {
-      if (error.code === 'USER_CANCEL') return;
+      if (error && error.code === 'USER_CANCEL') return;
       console.error('토스페이먼츠 결제 요청 실패:', error);
       showToast('결제 요청에 실패했습니다');
     });
