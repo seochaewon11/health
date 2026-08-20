@@ -2391,10 +2391,8 @@ li {
 .detail-promo__image {
   width: 120px;
   height: 120px;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 16px;
-  background: #fff;
-  padding: 10px;
   box-shadow: 0 10px 20px rgba(74, 47, 39, 0.12);
 }
 
