@@ -250,11 +250,11 @@
 
         <!-- 서브 내비게이션 -->
         <nav class="sub-nav" aria-label="카테고리 탭">
-          <a href="#" class="sub-nav__item is-active" data-nav="product-list" data-tab="pick">한끼픽</a>
-          <a href="#" class="sub-nav__item" data-nav="product-list" data-tab="sale">60% 할인</a>
-          <a href="#" class="sub-nav__item" data-nav="product-list" data-tab="best">베스트</a>
-          <a href="#" class="sub-nav__item" data-nav="product-list" data-tab="new">신상품</a>
-          <a href="#" class="sub-nav__item" data-nav="product-list" data-tab="event">이벤트</a>
+          <a href="#" class="sub-nav__item is-active" data-nav="product-list">한끼픽</a>
+          <a href="#" class="sub-nav__item" data-nav="product-list">60% 할인</a>
+          <a href="#" class="sub-nav__item" data-nav="product-list">베스트</a>
+          <a href="#" class="sub-nav__item" data-nav="product-list">신상품</a>
+          <a href="#" class="sub-nav__item" data-nav="product-list">이벤트</a>
         </nav>
 
         <main class="preview-main">
@@ -435,11 +435,11 @@
           </header>
 
           <nav class="sub-nav" aria-label="카테고리 탭">
-            <a href="#" class="sub-nav__item is-active" data-tab="pick">한끼픽</a>
-            <a href="#" class="sub-nav__item" data-tab="sale">60% 할인</a>
-            <a href="#" class="sub-nav__item" data-tab="best">베스트</a>
-            <a href="#" class="sub-nav__item" data-tab="new">신상품</a>
-            <a href="#" class="sub-nav__item" data-tab="event">이벤트</a>
+            <a href="#" class="sub-nav__item is-active">한끼픽</a>
+            <a href="#" class="sub-nav__item" data-nav="product-list">60% 할인</a>
+            <a href="#" class="sub-nav__item" data-nav="product-list">베스트</a>
+            <a href="#" class="sub-nav__item" data-nav="product-list">신상품</a>
+            <a href="#" class="sub-nav__item" data-nav="product-list">이벤트</a>
           </nav>
 
           <main class="list-main">
@@ -453,24 +453,24 @@
               </button>
             </div>
 
-            <div class="product-grid" id="listProductGrid">
+            <div class="product-grid">
               <a href="#" class="product-card" data-nav="detail">
                 <div class="product-card__thumb">
-                  <span class="product-card__badge product-card__badge--new" data-card-badge hidden></span>
+                  <span class="product-card__badge product-card__badge--new">신상</span>
                   <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
                         stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
                     </svg>
                   </button>
-                  <img data-card-img src="img/list001.png" alt="그릴드 바베큐 통살" />
+                  <img src="img/list001.png" alt="그릴드 바베큐 통살" />
                 </div>
                 <div class="product-card__info">
-                  <h4 data-card-name>그릴드 바베큐 통살</h4>
+                  <h4>그릴드 바베큐 통살</h4>
                   <div class="product-card__price-row">
                     <div>
-                      <p class="product-card__price"><span class="product-card__discount" data-card-discount>50%</span> <span data-card-price>10,900원</span></p>
-                      <p class="product-card__original" data-card-original>21,900원</p>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
                     </div>
                     <button type="button" class="product-card__add" aria-label="장바구니 담기">+</button>
                   </div>
@@ -479,21 +479,21 @@
 
               <a href="#" class="product-card" data-nav="detail">
                 <div class="product-card__thumb">
-                  <span class="product-card__badge product-card__badge--new" data-card-badge hidden></span>
+                  <span class="product-card__badge product-card__badge--new">신상</span>
                   <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
                         stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
                     </svg>
                   </button>
-                  <img data-card-img src="img/list002.png" alt="갈릭 허브 통살" />
+                  <img src="img/list002.png" alt="갈릭 허브 통살" />
                 </div>
                 <div class="product-card__info">
-                  <h4 data-card-name>갈릭 허브 통살</h4>
+                  <h4>갈릭 허브 통살</h4>
                   <div class="product-card__price-row">
                     <div>
-                      <p class="product-card__price"><span class="product-card__discount" data-card-discount>50%</span> <span data-card-price>10,900원</span></p>
-                      <p class="product-card__original" data-card-original>21,900원</p>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
                     </div>
                     <button type="button" class="product-card__add" aria-label="장바구니 담기">+</button>
                   </div>
@@ -502,21 +502,14 @@
 
               <a href="#" class="product-card" data-nav="detail">
                 <div class="product-card__thumb">
-                  <span class="product-card__badge product-card__badge--new" data-card-badge hidden></span>
-                  <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
-                        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
-                    </svg>
-                  </button>
-                  <img data-card-img src="img/list003.png" alt="갈릭 허브 통살 10팩 세트" />
+                  <img src="img/list003.png" alt="갈릭 허브 통살 10팩 세트" />
                 </div>
                 <div class="product-card__info">
-                  <h4 data-card-name>갈릭 허브 통살 10팩 세트</h4>
+                  <h4>갈릭 허브 통살 10팩 세트</h4>
                   <div class="product-card__price-row">
                     <div>
-                      <p class="product-card__price"><span class="product-card__discount" data-card-discount>50%</span> <span data-card-price>10,900원</span></p>
-                      <p class="product-card__original" data-card-original>21,900원</p>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
                     </div>
                     <button type="button" class="product-card__add" aria-label="장바구니 담기">+</button>
                   </div>
@@ -525,21 +518,21 @@
 
               <a href="#" class="product-card" data-nav="detail">
                 <div class="product-card__thumb">
-                  <span class="product-card__badge product-card__badge--deal" data-card-badge hidden></span>
+                  <span class="product-card__badge product-card__badge--deal">타임특가</span>
                   <button type="button" class="product-card__like" data-nav="wishlist" aria-label="찜한 상품 보기">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M12 21s-7.5-4.6-10-9.1C0.5 8.5 2 4.5 6 4c2.3-.3 4 1 6 3 2-2 3.7-3.3 6-3 4 .5 5.5 4.5 4 7.9-2.5 4.5-10 9.1-10 9.1z"
                         stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
                     </svg>
                   </button>
-                  <img data-card-img src="img/list004.png" alt="핵불닭맛 통살" />
+                  <img src="img/list004.png" alt="핵불닭맛 통살" />
                 </div>
                 <div class="product-card__info">
-                  <h4 data-card-name>핵불닭맛 통살</h4>
+                  <h4>핵불닭맛 통살</h4>
                   <div class="product-card__price-row">
                     <div>
-                      <p class="product-card__price"><span class="product-card__discount" data-card-discount>50%</span> <span data-card-price>10,900원</span></p>
-                      <p class="product-card__original" data-card-original>21,900원</p>
+                      <p class="product-card__price"><span class="product-card__discount">50%</span> 10,900원</p>
+                      <p class="product-card__original">21,900원</p>
                     </div>
                     <button type="button" class="product-card__add" aria-label="장바구니 담기">+</button>
                   </div>
