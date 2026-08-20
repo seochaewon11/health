@@ -40,6 +40,15 @@
       font-size: 28px;
     }
 
+    .result-card__icon--pending {
+      background: var(--tan);
+      color: var(--accent);
+    }
+
+    .result-card__icon--fail {
+      background: #E24C4C;
+    }
+
     .result-card__title {
       font-size: 18px;
       font-weight: 800;
@@ -88,9 +97,9 @@
 
 <body>
   <div class="result-card">
-    <div class="result-card__icon" aria-hidden="true">✓</div>
-    <p class="result-card__title">결제가 완료되었어요</p>
-    <p class="result-card__subtitle">토스페이먼츠로 안전하게 결제되었습니다</p>
+    <div class="result-card__icon result-card__icon--pending" id="resultIcon" aria-hidden="true">⋯</div>
+    <p class="result-card__title" id="resultTitle">결제를 승인하고 있어요</p>
+    <p class="result-card__subtitle" id="resultSubtitle">잠시만 기다려주세요</p>
 
     <div class="result-card__list" id="resultList"></div>
 
@@ -100,19 +109,68 @@
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
-      var rows = [
-        ['주문번호', params.get('orderId')],
-        ['결제금액', params.get('amount') ? Number(params.get('amount')).toLocaleString() + '원' : null],
-        ['결제키', params.get('paymentKey')]
-      ];
-      var list = document.getElementById('resultList');
-      rows.forEach(function (row) {
-        if (!row[1]) return;
-        var el = document.createElement('div');
-        el.className = 'result-card__row';
-        el.innerHTML = '<span>' + row[0] + '</span><span>' + row[1] + '</span>';
-        list.appendChild(el);
-      });
+      var paymentKey = params.get('paymentKey');
+      var orderId = params.get('orderId');
+      var amount = params.get('amount');
+
+      var iconEl = document.getElementById('resultIcon');
+      var titleEl = document.getElementById('resultTitle');
+      var subtitleEl = document.getElementById('resultSubtitle');
+      var listEl = document.getElementById('resultList');
+
+      function renderRows(rows) {
+        rows.forEach(function (row) {
+          if (!row[1]) return;
+          var el = document.createElement('div');
+          el.className = 'result-card__row';
+          el.innerHTML = '<span>' + row[0] + '</span><span>' + row[1] + '</span>';
+          listEl.appendChild(el);
+        });
+      }
+
+      function renderFailure(message) {
+        iconEl.className = 'result-card__icon result-card__icon--fail';
+        iconEl.textContent = '✕';
+        titleEl.textContent = '결제 승인에 실패했어요';
+        subtitleEl.textContent = message || '잠시 후 다시 시도해주세요';
+      }
+
+      if (!paymentKey || !orderId || !amount) {
+        renderFailure('결제 정보를 확인할 수 없습니다');
+        return;
+      }
+
+      fetch('/api/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentKey: paymentKey, orderId: orderId, amount: Number(amount) })
+      })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { ok: res.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (!result.ok) {
+            renderFailure(result.data && result.data.message);
+            return;
+          }
+          var data = result.data;
+          iconEl.className = 'result-card__icon';
+          iconEl.textContent = '✓';
+          titleEl.textContent = '결제가 완료되었어요';
+          subtitleEl.textContent = '토스페이먼츠로 안전하게 결제되었습니다';
+          renderRows([
+            ['주문명', data.orderName],
+            ['주문번호', data.orderId],
+            ['결제금액', typeof data.totalAmount === 'number' ? data.totalAmount.toLocaleString() + '원' : null],
+            ['결제수단', data.method],
+            ['승인시각', data.approvedAt ? new Date(data.approvedAt).toLocaleString('ko-KR') : null]
+          ]);
+        })
+        .catch(function () {
+          renderFailure('결제 승인 요청 중 오류가 발생했습니다');
+        });
     })();
   </script>
 </body>
