@@ -186,6 +186,60 @@
   });
 })();
 
+// 타임특가 카운트다운 — 1초마다 남은 시간을 실제로 줄여서 보여준다. 종료 시각을
+// localStorage에 저장해두어 새로고침해도 흐르던 시간이 이어지고, 다 되면 다음
+// 판(같은 길이)으로 자동으로 넘어간다.
+(function () {
+  var el = document.querySelector('.time-deal__countdown-time');
+  if (!el) return;
+
+  var DURATION_MS = (2 * 60 * 60 + 15 * 60 + 30) * 1000; // 02:15:30
+  var STORAGE_KEY = 'timeDealEndsAt';
+
+  function readEndsAt() {
+    try {
+      return Number(localStorage.getItem(STORAGE_KEY));
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function writeEndsAt(value) {
+    try {
+      localStorage.setItem(STORAGE_KEY, String(value));
+    } catch (e) {
+      // 저장 불가 환경에서는 매번 새 라운드로 시작
+    }
+  }
+
+  var endsAt = readEndsAt();
+  if (!endsAt || endsAt <= Date.now()) {
+    endsAt = Date.now() + DURATION_MS;
+    writeEndsAt(endsAt);
+  }
+
+  function pad(n) {
+    return n < 10 ? '0' + n : String(n);
+  }
+
+  function render() {
+    var remaining = endsAt - Date.now();
+    if (remaining <= 0) {
+      endsAt = Date.now() + DURATION_MS;
+      writeEndsAt(endsAt);
+      remaining = DURATION_MS;
+    }
+    var totalSec = Math.floor(remaining / 1000);
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+
+  render();
+  window.setInterval(render, 1000);
+})();
+
 // 이벤트 팝업 / 옵션 시트처럼 화면 전체를 덮는 오버레이는 모바일에서는 position:fixed만으로
 // 충분하지만, 데스크탑 폰 프레임 미리보기에서는 .preview-scroll이 자체적으로 스크롤되는
 // 컨테이너라 CSS만으로는 "프레임 안에서만, 스크롤 위치와 무관하게 고정" 두 조건을 동시에
