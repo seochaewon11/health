@@ -1016,13 +1016,44 @@ li {
 
 
 /* 타임특가 */
+.time-deal__banner-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.time-deal__banner {
+  display: block;
+  width: 100%;
+  aspect-ratio: 800 / 500;
+  object-fit: cover;
+}
+
 .time-deal__countdown {
-  padding: 0 16px;
-  font-size: clamp(0.8rem, 0.8vw + 0.6rem, 0.85rem);
+  position: absolute;
+  left: 50%;
+  bottom: -20px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border-radius: 999px;
+  padding: 9px 18px;
+  box-shadow: 0 8px 20px rgba(74, 47, 39, 0.18);
+  white-space: nowrap;
+}
+
+.time-deal__countdown-time {
+  font-size: clamp(0.85rem, 0.9vw + 0.6rem, 0.95rem);
   font-weight: 800;
   color: var(--accent-dark);
-  margin-bottom: 16px;
-  margin-top: -8px;
+  letter-spacing: 0.02em;
+}
+
+.time-deal__countdown-label {
+  font-size: clamp(0.72rem, 0.6vw + 0.55rem, 0.75rem);
+  font-weight: 600;
+  color: var(--text-sub);
 }
 
 .time-deal__row {
@@ -1030,6 +1061,7 @@ li {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   padding: 0 16px;
+  margin-top: 20px;
 }
 
 .time-deal__card {
