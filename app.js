@@ -160,8 +160,8 @@
       currentX = targetX;
       currentY = targetY;
       started = true;
-      glow.classList.add('is-visible');
     }
+    glow.classList.add('is-visible');
   });
 
   document.addEventListener('mouseleave', function () {
