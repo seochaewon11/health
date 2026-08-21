@@ -7,7 +7,7 @@
   <title>한끼통살 | 오늘 뭐 먹지?</title>
   <link rel="stylesheet" as="style" crossorigin
     href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-  <link rel="stylesheet" href="style.css?v=20260821-2" />
+  <link rel="stylesheet" href="style.css?v=20260821-3" />
   <link rel="icon" type="image/png" href="img/logo.png" />
 </head>
 
@@ -421,7 +421,7 @@
         <div class="screen screen--list" id="listScreen">
 
           <header class="list-header">
-            <button type="button" class="list-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="list-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <div class="list-header__logo" data-nav="main" role="button" tabindex="0">
               <img src="img/logo.png" alt="한끼통살 로고" />
               <span>한끼통살</span>
@@ -560,7 +560,7 @@
         <div class="screen screen--detail" id="detailScreen">
 
           <header class="list-header">
-            <button type="button" class="list-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="list-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <div class="list-header__logo" data-nav="main" role="button" tabindex="0">
               <img src="img/logo.png" alt="한끼통살 로고" />
               <span>한끼통살</span>
@@ -631,7 +631,7 @@
         <div class="screen screen--search" id="searchScreen">
 
           <header class="search-header">
-            <button type="button" class="search-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="search-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <div class="search-header__field">
               <input type="text" id="searchScreenInput" placeholder="오늘 뭐 먹지?" aria-label="검색" />
               <button type="button" id="searchScreenSubmitBtn" aria-label="검색하기">
@@ -703,7 +703,7 @@
         <div class="screen screen--cart" id="cartScreen">
 
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">장바구니</h2>
             <span class="page-header__spacer" aria-hidden="true"></span>
           </header>
@@ -714,10 +714,13 @@
               <p>장바구니에 담은 상품이 없습니다</p>
             </div>
 
-            <label class="cart-select-all" id="cartSelectAllRow">
-              <input type="checkbox" id="cartSelectAll" checked />
-              <span id="cartSelectAllLabel">전체선택 (1/2)</span>
-            </label>
+            <div class="cart-toolbar" id="cartSelectAllRow">
+              <label class="cart-select-all">
+                <input type="checkbox" id="cartSelectAll" checked />
+                <span id="cartSelectAllLabel">전체선택 (1/2)</span>
+              </label>
+              <button type="button" class="cart-clear-btn" id="cartClearBtn">장바구니 비우기</button>
+            </div>
 
             <div class="cart-item-list" id="cartItemList">
               <div class="cart-item">
@@ -871,7 +874,7 @@
         <div class="screen screen--wishlist" id="wishlistScreen">
 
           <header class="page-header">
-            <button type="button" class="page-header__back" data-nav="main" aria-label="뒤로가기">‹</button>
+            <button type="button" class="page-header__back" data-nav="back" aria-label="뒤로가기">‹</button>
             <h2 class="page-header__title">찜한 상품</h2>
             <div class="page-header__icons">
               <button type="button" data-action="open-search" aria-label="검색하기">
@@ -1537,7 +1540,7 @@
     integrity="sha384-DKYJZ8NLiK8MN4/C5P2dtSmLQ4KwPaoqAfyA/DfmEc1VDxu4yyC7wy6K1Hs90nka" crossorigin="anonymous"
     defer></script>
   <script src="https://js.tosspayments.com/v1/payment" defer></script>
-  <script src="app.js?v=20260821-2" defer></script>
+  <script src="app.js?v=20260821-3" defer></script>
 
 </body>
 

@@ -807,7 +807,7 @@ var mypageLogoutBtn = document.getElementById('mypageLogoutBtn');
 var mypageAuthLabel = document.getElementById('mypageAuthLabel');
 var utilityAuthBtn = document.getElementById('utilityAuthBtn');
 var headerProfileView = document.getElementById('headerProfileView');
-var categoryPromo = document.querySelector('.category-promo');
+var categoryPromoText = document.getElementById('categoryPromoLogin');
 var LOGIN_STORAGE_KEY = 'hcts_isLoggedIn';
 
 function loadLoginState() {
@@ -832,7 +832,7 @@ function renderHeaderAuth() {
   if (utilityAuthBtn) utilityAuthBtn.textContent = isLoggedIn ? '로그아웃' : '로그인';
   if (headerProfileView) headerProfileView.hidden = !isLoggedIn;
   if (mypageAuthLabel) mypageAuthLabel.textContent = isLoggedIn ? '로그아웃' : '로그인';
-  if (categoryPromo) categoryPromo.hidden = isLoggedIn;
+  if (categoryPromoText) categoryPromoText.hidden = isLoggedIn;
 }
 
 function openLogin() {
@@ -1196,6 +1196,16 @@ if (mypageLogoutBtn) {
       var previewScroll = document.querySelector('.preview-scroll');
       if (previewScroll) previewScroll.scrollTop = 0;
       window.scrollTo(0, 0);
+    });
+  }
+
+  var clearCartBtn = document.getElementById('cartClearBtn');
+  if (clearCartBtn) {
+    clearCartBtn.addEventListener('click', function () {
+      if (!cartItems.length) return;
+      cartItems = [];
+      renderCart();
+      showToast('장바구니를 비웠습니다');
     });
   }
 
