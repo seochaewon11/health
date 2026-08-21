@@ -597,6 +597,7 @@ li {
 /* 서브 내비게이션 */
 .sub-nav {
   display: flex;
+  justify-content: center;
   gap: 18px;
   padding: 4px 16px 14px;
   overflow-x: auto;
