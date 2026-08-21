@@ -2331,6 +2331,13 @@ li {
   border-bottom: none;
 }
 
+.mypage-footer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-sub);
+  letter-spacing: 0.02em;
+}
+
 .mypage-list__chevron {
   margin-left: auto;
   color: var(--text-sub);
