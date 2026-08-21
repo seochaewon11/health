@@ -807,6 +807,7 @@ var mypageLogoutBtn = document.getElementById('mypageLogoutBtn');
 var mypageAuthLabel = document.getElementById('mypageAuthLabel');
 var utilityAuthBtn = document.getElementById('utilityAuthBtn');
 var headerProfileView = document.getElementById('headerProfileView');
+var categoryPromo = document.querySelector('.category-promo');
 var LOGIN_STORAGE_KEY = 'hcts_isLoggedIn';
 
 function loadLoginState() {
@@ -831,6 +832,7 @@ function renderHeaderAuth() {
   if (utilityAuthBtn) utilityAuthBtn.textContent = isLoggedIn ? '로그아웃' : '로그인';
   if (headerProfileView) headerProfileView.hidden = !isLoggedIn;
   if (mypageAuthLabel) mypageAuthLabel.textContent = isLoggedIn ? '로그아웃' : '로그인';
+  if (categoryPromo) categoryPromo.hidden = isLoggedIn;
 }
 
 function openLogin() {
@@ -940,23 +942,10 @@ if (mypageLogoutBtn) {
 }
 
 (function () {
-  var tabs = document.querySelectorAll('.category-tabs__item');
-  var shopBody = document.querySelector('.category-body:not(.category-body--service)');
-  var serviceBody = document.querySelector('.category-body--service');
   var sidebarItems = document.querySelectorAll('.category-sidebar__item');
   var panels = document.querySelectorAll('.category-content__panel');
 
-  if (!tabs.length) return;
-
-  tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      tabs.forEach(function (t) { t.classList.remove('is-active'); });
-      tab.classList.add('is-active');
-      var isService = tab.getAttribute('data-tab') === 'service';
-      if (shopBody) shopBody.hidden = isService;
-      if (serviceBody) serviceBody.hidden = !isService;
-    });
-  });
+  if (!sidebarItems.length) return;
 
   sidebarItems.forEach(function (item) {
     item.addEventListener('click', function () {

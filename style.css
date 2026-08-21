@@ -2921,6 +2921,10 @@ li {
   background: var(--tan);
 }
 
+.category-promo[hidden] {
+  display: none;
+}
+
 .category-promo p {
   font-size: 13px;
   font-weight: 600;
