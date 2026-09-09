@@ -1173,6 +1173,10 @@ if (mypageLogoutBtn) {
       // 버블링되어 상세 화면으로 튕겨나가지 않도록 막는다.
       e.preventDefault();
       e.stopPropagation();
+      if (!isLoggedIn) {
+        openLogin();
+        return;
+      }
       var card = btn.closest('.product-card');
       var product = card ? getProductFromCard(card) : getProductFromDetail();
       if (product) {
